@@ -1,0 +1,44 @@
+# === CLion & JetBrains ===
+.idea/
+*.iml
+
+# === Build folders ===
+cmake-build-*/
+build/
+out/
+bin/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+cmake_install.cmake
+*.cmake
+
+# === Compiled Object files ===
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.dylib
+*.exe
+*.out
+
+# === Logs and crash dumps ===
+*.log
+*.stackdump
+
+# === OS-specific files ===
+.DS_Store
+Thumbs.db
+
+# === Cache ===
+*.cache
+*.pyc
+__pycache__/
+
+# === User-specific config ===
+*.swp
+*.swo
+*.user
