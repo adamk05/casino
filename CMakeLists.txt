@@ -3,4 +3,12 @@ project(casino)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(casino main.cpp)
+add_executable(casino main.cpp
+        deck/deck.cpp
+        deck/deck.h
+        players/Player.cpp
+        players/Player.h
+        players/Croupier.cpp
+        players/Croupier.h
+        games/Game.cpp
+        games/Game.h)
