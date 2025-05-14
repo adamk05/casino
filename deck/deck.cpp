@@ -1,7 +1,7 @@
 #include "deck.h"
 
-void displayDeck(const array<Card, 52>& deck) {
-    for (const auto& card : deck) {
+void displayDeck(vector<Card>& deck) {
+    for (const Card& card : deck) {
         cout << card.value << " " << card.color << endl;
     }
 }

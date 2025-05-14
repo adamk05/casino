@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include <array>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -14,7 +14,7 @@ struct Card {
     string value;
 };
 
-void displayDeck(const array<Card, 52>& deck);
+void displayDeck(vector<Card>& deck);
 
 void displayCard(const Card& card);
 

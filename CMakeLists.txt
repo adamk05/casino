@@ -11,4 +11,8 @@ add_executable(casino main.cpp
         players/Croupier.cpp
         players/Croupier.h
         games/Game.cpp
-        games/Game.h)
+        games/Game.h
+        functions/functions.cpp
+        functions/functions.h
+        games/Blackjack.cpp
+        games/Blackjack.h)

@@ -1,5 +1,8 @@
-//
-// Created by adamk on 12.05.2025.
-//
-
 #include "Player.h"
+
+Player::Player(string name) : name(name), cash(500), bet(0) { }
+
+void Player::winBet(float multiplier) {
+    cash += bet * multiplier;
+    bet = 0;
+}
