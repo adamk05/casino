@@ -7,7 +7,7 @@ void displayDeck(vector<Card>& deck) {
 }
 
 void displayCard(const Card& card) {
-    cout << card.value << " " << card.color << endl;
+    cout << card.value << " " << card.color << endl;;
 }
 
 string colors[4] = {"Kier", "Karo", "Trefl", "Pik"};

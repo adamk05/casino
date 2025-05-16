@@ -18,6 +18,7 @@ public:
     Croupier();
 
     void giveCard(Player& player);
+    void giveCard(vector<Card>& givenDeck);
     void giveCardToYourself();
     void clearUsedIndexes();
 };
