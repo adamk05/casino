@@ -1,5 +1,7 @@
 #include "Blackjack.h"
 
+#include <iomanip>
+
 Blackjack::Blackjack(Player &player, Croupier &croupier) : Game(player), croupier(croupier), insurance(0) { }
 
 void Blackjack::play() {
@@ -16,19 +18,32 @@ void Blackjack::play() {
         }
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
-    clear();
+    // clear();
     cout << "Krupier rozdaje karty..." << endl;
 
     wait();
-    clear();
+    // clear();
 
     croupier.giveCard(player);
     croupier.giveCard(player);
+
+
+    // do testowania splita
+    player.deck.at(0).value = "8";
+    player.deck.at(0).color = "Pik";
+    player.deck.at(1).value = "8";
+    player.deck.at(1).color = "Trefl";
 
     playerPoints = countPoints(player.deck);
 
     croupier.giveCardToYourself();
     croupier.giveCardToYourself();
+
+    //do testowania insurance
+    croupier.deck.at(0).value = "As";
+    croupier.deck.at(0).color = "Pik";
+    croupier.deck.at(1).value = "4";
+    croupier.deck.at(1).color = "Trefl";
 
     croupierPoints = countPoints(croupier.deck);
 
@@ -47,19 +62,40 @@ void Blackjack::play() {
         if (croupierPoints == 21) {
             cout << "Krupier też ma blackjacka!" << endl;
             wait();
-            cout << "Remis, wygrywasz zakład 1:1" << endl;
+            cout << "Remis" << endl;
             wait();
             cout << "Wygrywasz " << player.bet << endl;
             player.winBet(1);
         } else {
             cout << "Wygrywasz zakład 3:2" << endl;
             wait();
-            cout << "Wygrywasz " << player.bet * 1.5 << endl;
-            player.winBet(1.5);
+            cout << "Wygrywasz " << player.bet * 2.5 << endl;
+            player.winBet(2.5);
         }
     } else {
         cout << "Karta krupiera: " << endl;
         displayCard(croupier.deck.at(0));
+        if (croupier.deck.at(0).value == "As") {
+            string question = "Ubezpieczasz zakład? (t/n)";
+            insurance = yesNoResponse(question);
+            if (insurance) {
+                player.cash -= player.bet / 2;
+            }
+        }
+        if (croupierPoints == 21) {
+            cout << "Krupier ma blackjacka" << endl;
+            displayDeck(croupier.deck);
+            if (insurance) {
+                cout << "Zadziałało ubezpieczenie, wygrywasz " << player.bet * 1.5 << endl;
+                player.winBet(1.5);
+            } else {
+                cout << "Przegrywasz zakład";
+            }
+            return;
+        }
+        if (insurance) {
+            cout << "Krupier nie ma blackjacka, przegrywasz ubezpieczenie" << endl;
+        }
         wait();
         bool split;
         if (player.deck.at(0).value == player.deck.at(1).value && player.cash >= player.bet) {
@@ -67,10 +103,92 @@ void Blackjack::play() {
             split = yesNoResponse(question);
         }
         if (split) {
-            //todo split
-            return;
+            player.cash -= player.bet;
+            playerSplittedBet = player.bet;
+            splittedDeck.push_back(player.deck.at(1));
+            player.deck.pop_back();
+            printDecksAfterSplit();
+            cout << "Krupier daje kartę do ręki 1..." << endl;
+            wait();
+            croupier.giveCard(player);
+            playerPoints = countPoints(player.deck);
+            cout << "Dobrana karta: ";
+            displayCard(player.deck.at(1));
+            wait();
+            cout << "Krupier daje kartę do ręki 2..." << endl;
+            wait();
+            croupier.giveCard(splittedDeck);
+            playerSplittedPoints = countPoints(splittedDeck);
+            cout << "Dobrana karta: ";
+            displayCard(splittedDeck.at(1));
+            bool handOneFinish = false;
+            bool handTwoFinish = false;
+            // clear();
+            while (!handOneFinish || !handTwoFinish) {
+                cout << "Karta krupiera: " << endl;
+                displayCard(croupier.deck.at(0));
+                cout << "Twoje karty: " << endl;
+                printDecksAfterSplit();
+                if (!handOneFinish) {
+                    string question = "Jaki ruch wybierasz dla ręki 1 (s - stand/h - hit)";;
+                    vector<string> options;
+                    options.push_back("s");
+                    options.push_back("h");
+                    string response = multiChoiceResponse(question, options);
+                    if (response == "s") {
+                        handOneFinish = true;
+                    } else if (response == "h") {
+                        cout << "Krupier daje ci karte" << endl;
+                        wait();
+                        croupier.giveCard(player);
+                        playerPoints = countPoints(player.deck);
+                        cout << "Dobrana karta: " << endl;
+                        displayCard(player.deck.at(player.deck.size() - 1));
+                        wait();
+                        cout << "Twoje karty: " << endl;
+                        displayDeck(player.deck);
+                        wait();
+                        if (playerPoints > 21) {
+                            cout << "Przekroczyłeś 21 punktów, przegrywasz zakład" << endl;
+                            handOneFinish = true;
+                        }
+                    }
+                }
+                if (!handTwoFinish) {
+                    string question = "Jaki ruch wybierasz dla ręki 2 (s - stand/h - hit)";;
+                    vector<string> options;
+                    options.push_back("s");
+                    options.push_back("h");
+                    string response = multiChoiceResponse(question, options);
+                    if (response == "s") {
+                        handTwoFinish = true;
+                    } else if (response == "h") {
+                        cout << "Krupier daje ci karte" << endl;
+                        wait();
+                        croupier.giveCard(splittedDeck);
+                        playerSplittedPoints = countPoints(splittedDeck);
+                        cout << "Dobrana karta: " << endl;
+                        displayCard(splittedDeck.at(splittedDeck.size() - 1));
+                        wait();
+                        cout << "Twoje karty: " << endl;
+                        displayDeck(splittedDeck);
+                        wait();
+                        if (playerSplittedPoints > 21) {
+                            cout << "Przekroczyłeś 21 punktów, przegrywasz zakład" << endl;
+                            handTwoFinish = true;
+                        }
+                    }
+                }
+                // clear();
+            }
+            settleBet(true);
         } else {
             while (true) {
+                // clear();
+                cout << "Karta krupiera: " << endl;
+                displayCard(croupier.deck.at(0));
+                cout << "Twoje karty: " << endl;
+                displayDeck(player.deck);
                 string question;
                 vector<string> options;
                 options.push_back("s");
@@ -83,7 +201,7 @@ void Blackjack::play() {
                 }
                 string response = multiChoiceResponse(question, options);
                 if (response == "s") {
-                    settleBet();
+                    settleBet(false);
                     return;
                 } else if (response == "h") {
                     cout << "Krupier daje ci karte" << endl;
@@ -112,7 +230,8 @@ void Blackjack::play() {
                     cout << "Dobrana karta: " << endl;
                     displayCard(player.deck.at(player.deck.size() - 1));
                     wait();
-                    settleBet();
+                    settleBet(false);
+                    return;
                 }
             }
         }
@@ -161,9 +280,13 @@ int Blackjack::countPoints(vector<Card> &deck) {
     return points;
 }
 
-void Blackjack::settleBet() {
+void Blackjack::settleBet(bool splitted) {
     cout << "Twoje karty: " << endl;
-    displayDeck(player.deck);
+    if (splitted) {
+        printDecksAfterSplit();
+    } else {
+        displayDeck(player.deck);
+    }
     wait();
     cout << "Karty krupiera: " << endl;
     displayDeck(croupier.deck);
@@ -177,30 +300,77 @@ void Blackjack::settleBet() {
         croupierPoints = countPoints(croupier.deck);
         wait();
     }
-    if (croupierPoints > 21) {
+
+    if (splitted) {
+        cout << "Rozliczenie ręki 1: " << endl;
+    }
+
+    if (playerPoints > 21) {
+        cout << "Przekroczyłeś 21 punktów, przegrywasz zakład" << endl;
+    } else if (croupierPoints > 21) {
         cout << "Krupier przekroczył 21 punktów (" << croupierPoints << ")" << endl;
         wait();
-        cout << "Wygrywasz zakład 3:2" << endl;
+        cout << "Wygrywasz zakład 1:1" << endl;
         wait();
-        cout << "Wygrywasz " << player.bet * 1.5 << endl;
-        player.winBet(1.5);
+        cout << "Wygrywasz " << player.bet * 2 << endl;
+        player.winBet(2);
     } else if (croupierPoints == playerPoints) {
-        cout << "Remis, obaj gracze mają po " << playerPoints << " punktów, wygrywasz zakład 1:1" << endl;
+        cout << "Remis, obaj gracze mają po " << playerPoints << " punktów" << endl;
         wait();
         cout << "Wygrywasz " << player.bet * 1 << endl;
         player.winBet(1);
     } else if (playerPoints > croupierPoints) {
         cout << "Masz " << playerPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
         wait();
-        cout << "Wygrywasz zakład 3:2" << endl;
+        cout << "Wygrywasz zakład 1:1" << endl;
         wait();
-        cout << "Wygrywasz " << player.bet * 1.5 << endl;
+        cout << "Wygrywasz " << player.bet * 2 << endl;
+        player.winBet(2);
     } else {
         cout << "Masz " << playerPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
         wait();
         cout << "Przegrywasz zakład" << endl;
     }
+
+    if (splitted) {
+        cout << "Rozliczenie ręki 2: " << endl;
+        if (playerSplittedPoints > 21) {
+            cout << "Przekroczyłeś 21 punktów, przegrywasz zakład" << endl;
+        } else if (croupierPoints > 21) {
+            cout << "Krupier przekroczył 21 punktów (" << croupierPoints << ")" << endl;
+            wait();
+            cout << "Wygrywasz zakład 1:1" << endl;
+            wait();
+            cout << "Wygrywasz " << playerSplittedBet * 2 << endl;
+            player.winIndependentBet(playerSplittedBet * 2);
+        } else if (croupierPoints == playerSplittedPoints) {
+            cout << "Remis, obaj gracze mają po " << playerSplittedPoints << " punktów" << endl;
+            wait();
+            cout << "Wygrywasz " << playerSplittedBet * 1 << endl;
+            player.winIndependentBet(playerSplittedBet);
+        } else if (playerSplittedPoints > croupierPoints) {
+            cout << "Masz " << playerSplittedPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
+            wait();
+            cout << "Wygrywasz zakład 1:1" << endl;
+            wait();
+            cout << "Wygrywasz " << playerSplittedBet * 2 << endl;
+            player.winIndependentBet(playerSplittedBet * 2);
+        } else {
+            cout << "Masz " << playerSplittedPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
+            wait();
+            cout << "Przegrywasz zakład" << endl;
+        }
+    }
 }
+
+void Blackjack::printDecksAfterSplit() {
+    cout << "Ręka 1: " << endl;
+    displayDeck(player.deck);
+    cout << endl;
+    cout << "Ręka 2: " << endl;
+    displayDeck(splittedDeck);
+}
+
 
 
 

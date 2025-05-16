@@ -6,3 +6,8 @@ void Player::winBet(float multiplier) {
     cash += bet * multiplier;
     bet = 0;
 }
+
+void Player::winIndependentBet(float ammount) {
+    cash += ammount;
+}
+

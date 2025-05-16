@@ -17,6 +17,8 @@ public:
     Player(string name);
 
     void winBet(float multiplier);
+
+    void winIndependentBet(float ammount);
 };
 
 

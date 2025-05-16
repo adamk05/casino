@@ -6,7 +6,7 @@
 
 class Game {
 protected:
-    Player player;
+    Player& player;
 public:
     Game(Player& player);
 

@@ -7,13 +7,14 @@
 class Blackjack : public Game {
     Croupier croupier;
 
-    float insurance;
-
     vector<Card> splittedDeck;
+
+    bool insurance;
 
     int playerPoints;
     int croupierPoints;
     int playerSplittedPoints;
+    float playerSplittedBet;
 public:
     Blackjack(Player& player, Croupier& croupier);
 
@@ -23,7 +24,9 @@ public:
 
     static int countPoints(vector<Card>& deck);
 
-    void settleBet();
+    void settleBet(bool splitted);
+
+    void printDecksAfterSplit();
 };
 
 

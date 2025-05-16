@@ -9,5 +9,6 @@ int main() {
     Croupier croupier;
     Blackjack blackjack(player, croupier);
     blackjack.play();
+    cout << "Masz " << player.cash << endl;
     return 0;
 }
