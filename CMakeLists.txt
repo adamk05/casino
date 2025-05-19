@@ -15,4 +15,6 @@ add_executable(casino main.cpp
         functions/functions.cpp
         functions/functions.h
         games/Blackjack.cpp
-        games/Blackjack.h)
+        games/Blackjack.h
+        games/Baccarat.cpp
+        games/Baccarat.h)
