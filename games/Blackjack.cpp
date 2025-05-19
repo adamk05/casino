@@ -64,7 +64,7 @@ void Blackjack::play() {
             wait();
             cout << "Remis" << endl;
             wait();
-            cout << "Wygrywasz " << player.bet << endl;
+            cout << "Zwrot zakładu" << endl;
             player.winBet(1);
         } else {
             cout << "Wygrywasz zakład 3:2" << endl;
@@ -317,7 +317,7 @@ void Blackjack::settleBet(bool splitted) {
     } else if (croupierPoints == playerPoints) {
         cout << "Remis, obaj gracze mają po " << playerPoints << " punktów" << endl;
         wait();
-        cout << "Wygrywasz " << player.bet * 1 << endl;
+        cout << "Zwrot zakładu" << endl;
         player.winBet(1);
     } else if (playerPoints > croupierPoints) {
         cout << "Masz " << playerPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
@@ -346,7 +346,7 @@ void Blackjack::settleBet(bool splitted) {
         } else if (croupierPoints == playerSplittedPoints) {
             cout << "Remis, obaj gracze mają po " << playerSplittedPoints << " punktów" << endl;
             wait();
-            cout << "Wygrywasz " << playerSplittedBet * 1 << endl;
+            cout << "Zwrot zakładu" << endl;
             player.winIndependentBet(playerSplittedBet);
         } else if (playerSplittedPoints > croupierPoints) {
             cout << "Masz " << playerSplittedPoints << " punktów, a krupier ma " << croupierPoints << "punktów" << endl;
