@@ -7,7 +7,7 @@ Blackjack::Blackjack(Player &player, Croupier &croupier) : Game(player), croupie
 void Blackjack::play() {
     reset();
 
-    string question = "Ile stawiasz?";;
+    string question = "Ile stawiasz?";
 
     while (true) {
         float bet = getFloatInput(question);
