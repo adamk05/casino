@@ -29,10 +29,10 @@ void Blackjack::play() {
 
 
     // do testowania splita
-    player.deck.at(0).value = "8";
-    player.deck.at(0).color = "Pik";
-    player.deck.at(1).value = "8";
-    player.deck.at(1).color = "Trefl";
+    // player.deck.at(0).value = "8";
+    // player.deck.at(0).color = "Pik";
+    // player.deck.at(1).value = "8";
+    // player.deck.at(1).color = "Trefl";
 
     playerPoints = countPoints(player.deck);
 
@@ -40,10 +40,10 @@ void Blackjack::play() {
     croupier.giveCardToYourself();
 
     //do testowania insurance
-    croupier.deck.at(0).value = "As";
-    croupier.deck.at(0).color = "Pik";
-    croupier.deck.at(1).value = "4";
-    croupier.deck.at(1).color = "Trefl";
+    // croupier.deck.at(0).value = "As";
+    // croupier.deck.at(0).color = "Pik";
+    // croupier.deck.at(1).value = "4";
+    // croupier.deck.at(1).color = "Trefl";
 
     croupierPoints = countPoints(croupier.deck);
 

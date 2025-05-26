@@ -11,16 +11,30 @@
 int main() {
     Player player("mirek");
     Croupier croupier;
-    // Blackjack blackjack(player, croupier);
-    // blackjack.play();
-    // Baccarat baccarat(player, croupier);
-    // baccarat.play();
-    // Craps craps(player);
-    // craps.play();
-    OneHandedBandit bandit(player);
+    Blackjack blackjack(player, croupier);
+    Baccarat baccarat(player, croupier);
+    Craps craps(player);
+    OneHandedBandit one_handed_bandit(player);
     while (true) {
-        bandit.play();
+        // system("cls");
+        cout << "Cześć " << player.name << endl;
+        cout << "Masz " << player.cash << " punktów" << endl;
+        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
+        vector <string> gameOptions;
+        gameOptions.push_back("blackjack");
+        gameOptions.push_back("bakarat");
+        gameOptions.push_back("craps");
+        gameOptions.push_back("bandyta");
+        string response = multiChoiceResponse(question, gameOptions);
+        if (response == "blackjack") {
+            blackjack.play();
+        } else if (response == "bakarat") {
+            baccarat.play();
+        } else if (response == "craps") {
+            craps.play();
+        } else if (response == "bandyta") {
+            one_handed_bandit.play();
+        }
     }
-    cout << "Masz " << player.cash << endl;
     return 0;
 }
