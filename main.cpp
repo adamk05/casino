@@ -1,15 +1,12 @@
-#include <iostream>
-
 #include "games/Baccarat.h"
 #include "games/Blackjack.h"
 #include "games/Craps.h"
 #include "players/Croupier.h"
 #include "players/Player.h"
-
 #include "games/OneHandedBandit.h"
 
 int main() {
-    Player player("mirek");
+    Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
     Baccarat baccarat(player, croupier);
@@ -17,8 +14,7 @@ int main() {
     OneHandedBandit one_handed_bandit(player);
     while (true) {
         // system("cls");
-        cout << "Cześć " << player.name << endl;
-        cout << "Masz " << player.cash << " punktów" << endl;
+        player = initFromFile();
         string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
         vector <string> gameOptions;
         gameOptions.push_back("blackjack");
@@ -35,6 +31,7 @@ int main() {
         } else if (response == "bandyta") {
             one_handed_bandit.play();
         }
+        player.saveCash();
     }
     return 0;
 }
