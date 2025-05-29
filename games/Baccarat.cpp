@@ -5,7 +5,7 @@ Baccarat::Baccarat(Player &player, Croupier &croupier) : Game(player), croupier(
 void Baccarat::play() {
     reset();
 
-    string question = "Ile stawiasz?";;
+    string question = "Ile stawiasz?";
 
     while (true) {
         float bet = getFloatInput(question);
@@ -16,11 +16,10 @@ void Baccarat::play() {
         }
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
-    // clear();
+    clear();
     cout << "Krupier rozdaje karty..." << endl;
 
     wait();
-    // clear();
 
     croupier.giveCard(player);
     croupier.giveCard(player);
@@ -69,6 +68,7 @@ void Baccarat::play() {
             cout << "Dobrana karta: " << endl;
             displayCard(player.deck.at(player.deck.size() - 1));
             wait();
+            clear();
             cout << "Twoje karty: " << endl;
             displayDeck(player.deck);
         }
@@ -80,6 +80,7 @@ void Baccarat::play() {
             cout << "Krupier nie dobiera karty" << endl;
         }
         wait();
+        clear();
         cout << "Twoje karty: " << endl;
         displayDeck(player.deck);
         wait();
