@@ -7,7 +7,7 @@ OneHandedBandit::OneHandedBandit(Player &player) : Game(player) {
     symbolsMultiplierMap.emplace(char(4), 50);  // ♦
     symbolsMultiplierMap.emplace(char(5), 20);  // ♣
     symbolsMultiplierMap.emplace(char(1), 10);  // ☺
-    symbolsMultiplierMap.emplace(char(6), 0);  // ♪
+    symbolsMultiplierMap.emplace(char(6), 0);  //
 
     symbolsDistributionMap.push_back(make_pair(char(3), 1));
     symbolsDistributionMap.push_back(make_pair(char(4), 4));

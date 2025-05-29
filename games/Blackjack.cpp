@@ -97,7 +97,7 @@ void Blackjack::play() {
             cout << "Krupier nie ma blackjacka, przegrywasz ubezpieczenie" << endl;
         }
         wait();
-        bool split;
+        bool split = false;
         if (player.deck.at(0).value == player.deck.at(1).value && player.cash >= player.bet) {
             string question = "Masz dwie karty o identycznej wartości, decydujesz się na splita? (t/n)";
             split = yesNoResponse(question);

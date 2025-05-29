@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <vector>
 #include <string>
+#include <fstream>
 
 #include "../deck/deck.h"
 
@@ -14,12 +15,20 @@ public:
     vector<Card> deck;
     float bet;
 
+    Player();
+
     Player(string name);
+
+    Player(string name, float cash);
 
     void winBet(float multiplier);
 
     void winIndependentBet(float ammount);
+
+    void saveCash();
 };
+
+Player initFromFile();
 
 
 
