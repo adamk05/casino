@@ -27,6 +27,8 @@ void Craps::play() {
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
 
+    clear();
+
     while (true) {
         string propBetResponse = "";
         while (propBetResponse != "n") {
@@ -119,9 +121,11 @@ void Craps::play() {
                     }
                 }
             }
+            clear();
         }
         cout << "Kości zostały rzucone..." << endl;
         wait();
+        clear();
         int dice1 = randomize(1, 6);
         int dice2 = randomize(1, 6);
         cout << "Kość 1: " << dice1 << endl;
@@ -163,6 +167,7 @@ void Craps::play() {
 
             cout << "Ustanawia się point na " << result << endl;
             wait();
+            clear();
             point = result;
             settlePropBets(result);
             cout << "Gra trwa dalej, kolejne zakłady, kolejny rzut" << endl;

@@ -14,6 +14,7 @@ int main() {
     OneHandedBandit one_handed_bandit(player);
     while (true) {
         // system("cls");
+        clear();
         player = initFromFile();
         string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
         vector <string> gameOptions;
@@ -22,6 +23,7 @@ int main() {
         gameOptions.push_back("craps");
         gameOptions.push_back("bandyta");
         string response = multiChoiceResponse(question, gameOptions);
+        clear();
         if (response == "blackjack") {
             blackjack.play();
         } else if (response == "bakarat") {

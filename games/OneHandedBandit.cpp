@@ -28,6 +28,7 @@ void OneHandedBandit::play() {
         }
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
+    clear();
 
     cout << "Maszyna losuje..." << endl;
     wait();

@@ -18,11 +18,11 @@ void Blackjack::play() {
         }
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
-    // clear();
+    clear();
     cout << "Krupier rozdaje karty..." << endl;
 
     wait();
-    // clear();
+    clear();
 
     croupier.giveCard(player);
     croupier.giveCard(player);
@@ -179,12 +179,12 @@ void Blackjack::play() {
                         }
                     }
                 }
-                // clear();
+                clear();
             }
             settleBet(true);
         } else {
             while (true) {
-                // clear();
+                clear();
                 cout << "Karta krupiera: " << endl;
                 displayCard(croupier.deck.at(0));
                 cout << "Twoje karty: " << endl;
