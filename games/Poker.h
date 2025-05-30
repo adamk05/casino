@@ -1,0 +1,22 @@
+#ifndef POCKER_H
+#define POCKER_H
+#include "../players/Croupier.h"
+#include "../players/Player.h"
+#include "../players/Bot.h"
+
+class Poker {
+    Player& player;
+    Croupier& croupier;
+    Bot& bob;
+    Bot& john;
+    Bot& tim;
+    void reset() const;
+
+public:
+    Poker(Player& player, Croupier& croupier, Bot& bob, Bot& john, Bot& tim) : player(player), croupier(croupier), bob(bob), john(john), tim(tim) {}
+    void play() const;
+};
+
+
+
+#endif

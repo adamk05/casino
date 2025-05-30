@@ -21,4 +21,10 @@ add_executable(casino main.cpp
         games/Craps.cpp
         games/Craps.h
         games/OneHandedBandit.cpp
-        games/OneHandedBandit.h)
+        games/OneHandedBandit.h
+        games/Poker.cpp
+        games/Poker.h
+        players/Bot.cpp
+        players/Bot.h
+        functions/poker.cpp
+        functions/poker.h)
