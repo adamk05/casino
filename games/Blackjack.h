@@ -9,10 +9,13 @@ class Blackjack : public Game {
 
     vector<Card> splittedDeck;
 
+    // flag that represents if player chose to play insurance
     bool insurance;
 
     int playerPoints;
     int croupierPoints;
+
+    //variables for splitted deck
     int playerSplittedPoints;
     float playerSplittedBet;
 public:
@@ -22,10 +25,13 @@ public:
 
     void reset() override;
 
+    //counts points with blackjack rules given the deck
     static int countPoints(vector<Card>& deck);
 
+    //handling if player wins, given the splitted flag
     void settleBet(bool splitted);
 
+    //function handling displaying both player's hands after split
     void printDecksAfterSplit();
 };
 

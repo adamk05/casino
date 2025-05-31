@@ -1,12 +1,5 @@
 #include "functions.h"
 
-#ifdef _WIN32
-#define byte win_byte_override
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
-
 using namespace std;
 
 int randomize(const int start, const int end) {

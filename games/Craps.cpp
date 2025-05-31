@@ -30,6 +30,8 @@ void Craps::play() {
     clear();
 
     while (true) {
+        // players gets the opportunity to place any ammount of prop bets. He can place one bet at the time, after it was placed
+        // he is asked again to place a bet. When he decides he is done he presses "n". Player can't place 2 different bets for same thing
         string propBetResponse = "";
         while (propBetResponse != "n") {
             if (player.cash == 0) {
