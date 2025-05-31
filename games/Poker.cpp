@@ -26,24 +26,13 @@ void Poker::play() const {
     for (int i = 0 ; i < 2; i++) {
         for (auto * j : line) {
             cout << "Krupier daje kartę graczowi " << j->name << endl;
-            if (!player.deck.empty() && j->name != player.name) {
-                cout << "Karty gracza: " << endl;
-                displayDeck(player.deck);
-            }
-            if (j->name == player.name) {
-                croupier.giveCard(player);
-                cout << "Karty gracza: " << endl;
-                displayDeck(player.deck);
-                wait();
-                clear();
-                continue;
-            }
             croupier.giveCard(*j);
             wait();
             clear();
         }
     }
 
+    croupier.giveCard(table);
     croupier.giveCard(table);
     cout << "Karty na stole: " << endl;
     displayDeck(table);

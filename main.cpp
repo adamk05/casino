@@ -7,6 +7,7 @@
 #include "players/Player.h"
 
 #include "games/OneHandedBandit.h"
+#include "games/Poker.h"
 
 int main() {
     Player player("mirek");
@@ -15,16 +16,21 @@ int main() {
     Baccarat baccarat(player, croupier);
     Craps craps(player);
     OneHandedBandit one_handed_bandit(player);
+    Bot tim("tim", 0.2);
+    Bot john("john", 0.5);
+    Bot bob("bob", 0.7);
+    Poker poker(player, croupier, bob, john, tim);
     while (true) {
         // system("cls");
         cout << "Cześć " << player.name << endl;
         cout << "Masz " << player.cash << " punktów" << endl;
-        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
+        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta/poker)";
         vector <string> gameOptions;
         gameOptions.push_back("blackjack");
         gameOptions.push_back("bakarat");
         gameOptions.push_back("craps");
         gameOptions.push_back("bandyta");
+        gameOptions.push_back("poker");
         string response = multiChoiceResponse(question, gameOptions);
         if (response == "blackjack") {
             blackjack.play();
@@ -34,6 +40,8 @@ int main() {
             craps.play();
         } else if (response == "bandyta") {
             one_handed_bandit.play();
+        } else if (response == "poker") {
+            poker.play();
         }
     }
     return 0;

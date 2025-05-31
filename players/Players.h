@@ -13,6 +13,7 @@ class Players {
     bool isCheck = false;
     bool isAllIn = false;
 public:
+    Players(string name);
     string name;
     vector<Card> deck;
     float cash = 500;

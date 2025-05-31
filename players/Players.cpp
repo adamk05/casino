@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Players::Players(string name) : name(), points(0){}
+Players::Players(string name) : name(name) {}
 
 bool Players::operator==(const Players& other) const {
     return name == other.name;

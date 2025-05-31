@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(string name) : cash(500), bet(0) {
-    this->name = name;
+Player::Player(string name) : Players(name), bet(0) {
+    this->cash = 500;
 }
 
 void Player::winBet(float multiplier) {
