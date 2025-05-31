@@ -26,7 +26,7 @@ void Croupier::giveCardToYourself() {
     usedIndexes.insert(index);
 }
 
-void Croupier::giveCard(Player &player) {
+void Croupier::giveCard(Players &player) {
     if (usedIndexes.size() == 52) {
         throw runtime_error("Brak kart w talii!");
     }

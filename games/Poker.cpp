@@ -26,24 +26,30 @@ void Poker::play() const {
     for (int i = 0 ; i < 2; i++) {
         for (auto * j : line) {
             cout << "Krupier daje kartę graczowi " << j->name << endl;
-            if (!player.deck.empty() && j->name != player.name) player.displayHand(table);
+            if (!player.deck.empty() && j->name != player.name) {
+                cout << "Karty gracza: " << endl;
+                displayDeck(player.deck);
+            }
             if (j->name == player.name) {
-                croupier.addCard(deck, player);
-                player.displayHand(table);
+                croupier.giveCard(player);
+                cout << "Karty gracza: " << endl;
+                displayDeck(player.deck);
                 wait();
                 clear();
                 continue;
             }
-            croupier.addCard(deck, *j);
+            croupier.giveCard(*j);
             wait();
             clear();
         }
     }
 
     croupier.giveCard(table);
-    croupier.displayTable(table);
+    cout << "Karty na stole: " << endl;
+    displayDeck(table);
     cout << endl;
-    player.displayHand(table);
+    cout << "Karty gracza: " << endl;
+    displayDeck(player.deck);
     wait();
     clear();
 
@@ -53,10 +59,12 @@ void Poker::play() const {
         for (auto * i : line) i->setCheck(false);
         check_line.clear();
 
-        croupier.putCardOnTable(deck, table);
-        croupier.displayTable(table);
+        croupier.giveCard(table);
+        cout << "Karty na stole: " << endl;
+        displayDeck(table);
         cout << endl;
-        player.displayHand(table);
+        cout << "Karty gracza: " << endl;
+        displayDeck(player.deck);
         wait();
         clear();
 
@@ -69,17 +77,22 @@ void Poker::play() const {
             clear();
             if (i->name != player.name) cout << "Teraz gra gracz " << i->name << endl;
             if (i->name != player.name) {
-                croupier.displayTable(table);
+                cout << "Karty na stole: " << endl;
+                displayDeck(table);
                 cout << endl;
-                player.displayHand(table);
+                cout << "Karty gracza: " << endl;
+                displayDeck(player.deck);
                 wait();
             }
             if (i->name == player.name) {
                 while (true) {
                     cout << "Teraz gra gracz " << i->name << endl;
-                    croupier.displayTable(table);
+                    cout << "Karty na stole: " << endl;
+                    displayDeck(table);
                     cout << endl;
-                    player.displayHand(table);
+                    // player.displayHand(table);
+                    cout << "Karty gracza: " << endl;
+                    displayDeck(player.deck);
                     cout << "Podaj opcję [Fold/Check/Call/Bet/All-in]:" << endl << "> ";
                     cin >> option;
                     if (option == "Fold") {
@@ -144,17 +157,21 @@ void Poker::play() const {
                 clear();
                 if (i->name != player.name) cout << "Teraz gra gracz " << i->name << endl;
                 if (i->name != player.name) {
-                    croupier.displayTable(table);
+                    cout << "Karty na stole: " << endl;
+                    displayDeck(table);
                     cout << endl;
-                    player.displayHand(table);
+                    cout << "Karty gracza: " << endl;
+                    displayDeck(player.deck);
                     wait();
                 }
                 if (i->name == player.name) {
                     while (true) {
                         cout << "Teraz gra gracz " << i->name << endl;
-                        croupier.displayTable(table);
+                        cout << "Karty na stole: " << endl;
+                        displayDeck(table);
                         cout << endl;
-                        player.displayHand(table);
+                        cout << "Karty gracza: " << endl;
+                        displayDeck(player.deck);
                         cout << "Podaj opcję [Fold/Call/Bet/All-in]:" << endl << "> ";
                         cin >> option;
                         if (option == "Fold") {
@@ -218,10 +235,11 @@ void Poker::play() const {
         clear();
     }
 
-    croupier.displayTable(table);
+    cout << "Karty na stole: " << endl;
+    displayDeck(table);
     cout << endl;
-    player.displayHand(table);
-    cout << endl;
+    cout << "Karty gracza: " << endl;
+    displayDeck(player.deck);
 
     if (player.getFold()) {
         cout << "Wygrał gracz " << player.name << endl;

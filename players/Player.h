@@ -10,7 +10,6 @@ using namespace std;
 
 class Player : public Players {
 public:
-    string name;
     float cash;
     vector<Card> deck;
     float bet;
