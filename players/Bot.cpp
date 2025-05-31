@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Bot::Bot(const string& name, const double allInChance) : Players(name) {
+Bot::Bot(const string& name, const double allInChance) {
     this->name = name;
     this->allInChance = allInChance;
 }

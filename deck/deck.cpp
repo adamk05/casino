@@ -1,9 +1,7 @@
 #include "deck.h"
 
 void displayDeck(vector<Card>& deck) {
-    for (const Card& card : deck) {
-        cout << card.value << " " << card.color << endl;
-    }
+    for (const Card& card : deck) cout << card.value << " " << card.color << endl;
 }
 
 void displayCard(const Card& card) {

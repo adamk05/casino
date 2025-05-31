@@ -2,7 +2,6 @@
 #include <iostream>
 #include "../functions/functions.h"
 #include <string>
-#include <array>
 #include <vector>
 #include <algorithm>
 #include "../players/Bot.h"
@@ -16,19 +15,10 @@ void Poker::play() const {
 
     string option;
     double money = 0;
-    array<Card, 52> deck;
     int index = 0;
     vector<Card> table;
     double actual_bet = 0;
     double bet;
-
-    for (const auto& color : colors) {
-        for (const auto& value : values) {
-            deck[index].color = color;
-            deck[index].value = value;
-            index++;
-        }
-    }
 
     vector<Players*> line = {&player, &bob, &john, &tim};
     vector<Players*> check_line;
@@ -40,21 +30,21 @@ void Poker::play() const {
             if (j->name == player.name) {
                 croupier.addCard(deck, player);
                 player.displayHand(table);
-                sleep();
+                wait();
                 clear();
                 continue;
             }
             croupier.addCard(deck, *j);
-            sleep();
+            wait();
             clear();
         }
     }
 
-    croupier.putCardOnTable(deck, table);
+    croupier.giveCard(table);
     croupier.displayTable(table);
     cout << endl;
     player.displayHand(table);
-    sleep();
+    wait();
     clear();
 
     while (table.size() < 5) {
@@ -67,7 +57,7 @@ void Poker::play() const {
         croupier.displayTable(table);
         cout << endl;
         player.displayHand(table);
-        sleep();
+        wait();
         clear();
 
         cout << "Gracze: ";
@@ -82,7 +72,7 @@ void Poker::play() const {
                 croupier.displayTable(table);
                 cout << endl;
                 player.displayHand(table);
-                sleep();
+                wait();
             }
             if (i->name == player.name) {
                 while (true) {
@@ -136,7 +126,7 @@ void Poker::play() const {
             if (option == "Fold") {
                 i->setFold(true);
                 cout << endl << "Gracz " << i->name << " spasował" << endl;
-                sleep();
+                wait();
             } else if (option == "Check") {
                 i->setCheck(true);
                 check_line.push_back(i);
@@ -157,7 +147,7 @@ void Poker::play() const {
                     croupier.displayTable(table);
                     cout << endl;
                     player.displayHand(table);
-                    sleep();
+                    wait();
                 }
                 if (i->name == player.name) {
                     while (true) {
@@ -207,7 +197,7 @@ void Poker::play() const {
                 if (option == "Fold") {
                     i->setFold(true);
                     cout << endl << "Gracz " << i->name << " spasował" << endl;
-                    sleep();
+                    wait();
                 } else if (option == "Call") continue;
                 else if (option == "Bet") continue;
                 else if (option == "All-in") {

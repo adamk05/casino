@@ -27,4 +27,6 @@ add_executable(casino main.cpp
         players/Bot.cpp
         players/Bot.h
         functions/poker.cpp
-        functions/poker.h)
+        functions/poker.h
+        players/Players.cpp
+        players/Players.h)

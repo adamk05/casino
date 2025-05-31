@@ -25,4 +25,4 @@ public:
 
 
 
-#endif //CROUPIER_H
+#endif

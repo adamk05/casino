@@ -3,16 +3,21 @@
 #include "../deck/deck.h"
 #include <vector>
 
+#include "Players.h"
+
 using namespace std;
 
-class Bot {
+class Bot : public Players {
     double allInChance;
     bool isFold = false;
     bool isCheck = false;
     bool isAllIn = false;
-    double money = 100;
+    double cash = 100;
+    vector<Card> deck;
+    string name;
 
 public:
+    // Constructor of a bot
     Bot(const string& name, double allInChance);
 
     // Checks if it's worthy to bet

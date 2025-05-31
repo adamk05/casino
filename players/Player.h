@@ -3,11 +3,12 @@
 #include <vector>
 #include <string>
 
+#include "Players.h"
 #include "../deck/deck.h"
 
 using namespace std;
 
-class Player {
+class Player : public Players {
 public:
     string name;
     float cash;
