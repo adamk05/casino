@@ -19,6 +19,9 @@ public:
     void winBet(float multiplier);
 
     void winIndependentBet(float ammount);
+
+    double getCash();
+    void setCash(double money);
 };
 
 
