@@ -3,8 +3,13 @@
 #include <random>
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <cctype>
+#ifdef _WIN32
+#define byte win_byte_override
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
+
 
 using namespace std;
 

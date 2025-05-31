@@ -36,6 +36,7 @@ void Baccarat::play() {
 
     wait();
 
+    //in case player or croupier has more than 8 points the game imediatelly ends
     if (playerPoints >= 8) {
         cout << "Masz " << playerPoints << " punktów, koniec gry" << endl;
         wait();
@@ -59,7 +60,7 @@ void Baccarat::play() {
         displayDeck(croupier.deck);
         wait();
         cout << "Ty masz " << playerPoints << " punktów, przegrywasz zakład";
-    } else {
+    } else { // player can make decision about drawing a card
         string question = "Chcesz dobrać kartę (t/n)";
         bool drawCard = yesNoResponse(question);
         if (drawCard) {
@@ -72,7 +73,7 @@ void Baccarat::play() {
             cout << "Twoje karty: " << endl;
             displayDeck(player.deck);
         }
-        if (croupierPoints <= 4) {
+        if (croupierPoints <= 4) { //croupier draws card if he has less than 5 points
             cout << "Krupier dobiera kartę" << endl;
             croupier.giveCardToYourself();
             croupierPoints = countPoints(croupier.deck);

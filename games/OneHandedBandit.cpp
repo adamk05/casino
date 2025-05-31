@@ -9,11 +9,12 @@ OneHandedBandit::OneHandedBandit(Player &player) : Game(player) {
     symbolsMultiplierMap.emplace(char(1), 10);  // ☺
     symbolsMultiplierMap.emplace(char(6), 0);  //
 
-    symbolsDistributionMap.push_back(make_pair(char(3), 1));
-    symbolsDistributionMap.push_back(make_pair(char(4), 4));
-    symbolsDistributionMap.push_back(make_pair(char(5), 8));
-    symbolsDistributionMap.push_back(make_pair(char(1), 13));
-    symbolsDistributionMap.push_back(make_pair(char(6), 19));
+
+    symbolsDistributionMap.push_back(make_pair(char(3), 1)); // char(3) stands for 0-1 random outcome
+    symbolsDistributionMap.push_back(make_pair(char(4), 4)); // char(4) stands for 2-4 random outcome
+    symbolsDistributionMap.push_back(make_pair(char(5), 8)); // char(5) stands for 5-8 random outcome
+    symbolsDistributionMap.push_back(make_pair(char(1), 13)); // char(1) stands for 9-13 random outcome
+    symbolsDistributionMap.push_back(make_pair(char(6), 19)); //char (6) stands for 14-19 random outcome
 }
 
 void OneHandedBandit::play() {
@@ -37,6 +38,7 @@ void OneHandedBandit::play() {
     int symbol3 = randomize(0, 19);
     char symbols[3] = { '\0', '\0', '\0' };
     for (const pair<char, int> pair : symbolsDistributionMap) {
+        //if symbol is not assigned yet and is lower that currently verified symbol's upper limit, this symbol is asigned
         if (symbols[0] == '\0' && symbol1 <= pair.second) {
             symbols[0] = pair.first;
         }

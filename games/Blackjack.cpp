@@ -53,6 +53,7 @@ void Blackjack::play() {
 
     wait();
 
+    //if player or croupier has 21 points with first 2 cards, the game imedietally ends
     if (playerPoints == 21) {
         cout << "Masz blackjacka!" << endl;
         wait();
@@ -73,8 +74,11 @@ void Blackjack::play() {
             player.winBet(2.5);
         }
     } else {
+        //player gets to know one of croupier's cards
         cout << "Karta krupiera: " << endl;
         displayCard(croupier.deck.at(0));
+
+        //if showed card is ace, player gets an opportunity to play insurance
         if (croupier.deck.at(0).value == "As") {
             string question = "Ubezpieczasz zakład? (t/n)";
             insurance = yesNoResponse(question);
@@ -97,6 +101,7 @@ void Blackjack::play() {
             cout << "Krupier nie ma blackjacka, przegrywasz ubezpieczenie" << endl;
         }
         wait();
+        //if player has 2 same value cards, he gets an opportunity to split the deck
         bool split = false;
         if (player.deck.at(0).value == player.deck.at(1).value && player.cash >= player.bet) {
             string question = "Masz dwie karty o identycznej wartości, decydujesz się na splita? (t/n)";
@@ -121,14 +126,17 @@ void Blackjack::play() {
             playerSplittedPoints = countPoints(splittedDeck);
             cout << "Dobrana karta: ";
             displayCard(splittedDeck.at(1));
+            //after split both hands are independent
             bool handOneFinish = false;
             bool handTwoFinish = false;
             // clear();
+            //game ends if both hands had ended
             while (!handOneFinish || !handTwoFinish) {
                 cout << "Karta krupiera: " << endl;
                 displayCard(croupier.deck.at(0));
                 cout << "Twoje karty: " << endl;
                 printDecksAfterSplit();
+                //player makes moves for both hands if the hand is not finished
                 if (!handOneFinish) {
                     string question = "Jaki ruch wybierasz dla ręki 1 (s - stand/h - hit)";;
                     vector<string> options;
@@ -248,9 +256,8 @@ void Blackjack::reset() {
 
 int Blackjack::countPoints(vector<Card> &deck) {
     int points = 0;
-    int aces = 0; // Ilość asów w talii
+    int aces = 0; // ammount of aces in the deck
 
-    // Liczenie punktów
     for (Card& card : deck) {
         if (card.value == "2") points += 2;
         else if (card.value == "3") points += 3;
@@ -267,7 +274,7 @@ int Blackjack::countPoints(vector<Card> &deck) {
         else if (card.value == "As") aces++;
     }
 
-    // Dodawanie punktów asów
+    // adding aces' points
     for (int i = 0; i < aces; i++) {
         if (points < 21) {
             points += 11;
