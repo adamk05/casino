@@ -11,3 +11,11 @@ void Player::winIndependentBet(float ammount) {
     cash += ammount;
 }
 
+double Player::getCash() {
+    return cash;
+}
+
+void Player::setCash(double money) {
+    this->cash = money;
+}
+
