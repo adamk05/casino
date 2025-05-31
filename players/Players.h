@@ -14,6 +14,8 @@ class Players {
     bool isAllIn = false;
 public:
     string name;
+    vector<Card> deck;
+    float cash = 500;
     virtual ~Players() = default;
 
     bool operator==(const Players& other) const;
@@ -56,6 +58,10 @@ public:
 
     // Ustawia wartość zakładu
     void setBet(double money);
+
+    double getCash();
+
+    void setCash(double money);
 };
 
 #endif //PLAYERS_H

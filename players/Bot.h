@@ -12,8 +12,6 @@ class Bot : public Players {
     bool isFold = false;
     bool isCheck = false;
     bool isAllIn = false;
-    double cash = 100;
-    vector<Card> deck;
 
 public:
     // Constructor of a bot

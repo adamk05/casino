@@ -200,3 +200,4 @@ double Players::getBet() {
 void Players::setBet(double money) {
     bet = money;
 }
+

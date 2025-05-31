@@ -248,7 +248,7 @@ void Poker::play() const {
         if (line.size() == 1) {
             cout << "Wygrał gracz " << player.name << endl;
             player.setCash(player.getCash() + money);
-        } else croupier.whoWinsPoker(line, table);
+        } else whoWinsPoker(line, table);
     }
 }
 
@@ -269,4 +269,27 @@ void Poker::reset() const {
     bob.setCheck(false);
     john.setCheck(false);
     tim.setCheck(false);
+}
+
+void Poker::whoWinsPoker(vector<Players*> line, vector<Card>& table) const {
+    vector<Players*> winners;
+    int bestHand = 0;
+
+    for (auto player : line) {
+        vector<Card> combinedCards = player->deck;
+        combinedCards.insert(combinedCards.end(), table.begin(), table.end());
+
+        string hand = player->checkCards(table);
+        int handValue = getHandValue(hand, combinedCards);
+
+        if (handValue > bestHand) {
+            bestHand = handValue;
+            winners = {player}; // Resetuj listę zwycięzców
+        } else if (handValue == bestHand) {
+            winners.push_back(player); // Dodaj gracza do listy zwycięzców
+        }
+
+    }
+
+    winners.size() == 1 ? cout << "Wygrał gracz: " << winners[0]->name << endl : cout << "Remis" << endl;
 }

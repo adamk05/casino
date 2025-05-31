@@ -1,6 +1,8 @@
 #include "Player.h"
 
-Player::Player(string name) : name(name), cash(500), bet(0) { }
+Player::Player(string name) : cash(500), bet(0) {
+    this->name = name;
+}
 
 void Player::winBet(float multiplier) {
     cash += bet * multiplier;
