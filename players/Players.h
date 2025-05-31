@@ -22,15 +22,6 @@ public:
     bool operator==(const Players& other) const;
 
     // Wyświetla karty w ręce gracza
-    void displayDeck() const;
-
-    // Podlicza punkty kart w ręce gracza w grze Bakarat
-    void countPointsBaccarat();
-
-    // Podlicza punkty kart w ręce gracza w grze Blackjack
-    void countPointsBlackjack();
-
-    // Wyświetla karty w ręce gracza
     void displayHand(const vector<Card>& table) const;
 
     // Sprawdza karty w ręce i na stole
