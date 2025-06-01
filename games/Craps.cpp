@@ -38,7 +38,7 @@ void Craps::play() {
                 cout << "Nie masz punktów, nie możesz obstawić nowego zakładu" << endl;
                 break;
             }
-            question = "Dostępne zakłady poboczne: any 7 (7)/ Yo (11) / Hi-Lo (2 lub 12) / Craps (2, 3, lub 12) / Field (2, 3, 4, 9, 10, 11, 12)\n Czy chcesz obstawić jakiś zakład poboczny? (a - any 7 / y - yo / h - hi-lo / c - craps / f -field / n - nie chcę stawiać pobocznego zakładu)";
+            question = "Dostępne zakłady poboczne:\n any 7 (7)\n Yo (11)\n Hi-Lo (2 lub 12)\n Craps (2, 3, lub 12)\n Field (2, 3, 4, 9, 10, 11, 12)\nCzy chcesz obstawić jakiś zakład poboczny? (a - any 7 / y - yo / h - hi-lo / c - craps / f -field / n - nie chcę stawiać pobocznego zakładu)";
             vector <string> propBetOptions;
             propBetOptions.push_back("a");
             propBetOptions.push_back("y");
