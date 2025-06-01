@@ -143,3 +143,7 @@ void Players::setBet(double money) {
     bet = money;
 }
 
+double Players::decideBetAmount(double actual_bet) {
+    // Przykładowa strategia
+    return actual_bet + 10 + rand() % 50;  // Podbija o 10-60
+}

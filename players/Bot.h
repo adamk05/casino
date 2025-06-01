@@ -22,6 +22,8 @@ public:
 
     // Strategy for a bot
     string strategy(const vector<Card>& table, int actual_bet);
+
+
 };
 
 #endif

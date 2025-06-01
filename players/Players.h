@@ -54,6 +54,8 @@ public:
     double getCash();
 
     void setCash(double money);
+
+    double decideBetAmount(double actual_bet);
 };
 
 #endif //PLAYERS_H
