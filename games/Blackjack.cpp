@@ -368,6 +368,7 @@ void Blackjack::settleBet(bool splitted) {
             cout << "Przegrywasz zakład" << endl;
         }
     }
+    wait();
 }
 
 void Blackjack::printDecksAfterSplit() {
