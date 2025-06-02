@@ -5,12 +5,14 @@
 #include "games/Craps.h"
 #include "players/Croupier.h"
 #include "players/Player.h"
-
+#include "functions/functions.h"
 #include "games/OneHandedBandit.h"
 #include "games/Poker.h"
 
 int main() {
-    Player player("mirek");
+    SetConsoleOutputCP(437);
+    system("chcp 437");
+    Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
     Baccarat baccarat(player, croupier);
@@ -22,9 +24,9 @@ int main() {
     Poker poker(player, croupier, bob, john, tim);
     while (true) {
         // system("cls");
-        cout << "Cześć " << player.name << endl;
-        cout << "Masz " << player.cash << " punktów" << endl;
-        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta/poker)";
+        clear();
+        player = initFromFile();
+        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
         vector <string> gameOptions;
         gameOptions.push_back("blackjack");
         gameOptions.push_back("bakarat");
@@ -32,6 +34,7 @@ int main() {
         gameOptions.push_back("bandyta");
         gameOptions.push_back("poker");
         string response = multiChoiceResponse(question, gameOptions);
+        clear();
         if (response == "blackjack") {
             blackjack.play();
         } else if (response == "bakarat") {
@@ -43,6 +46,7 @@ int main() {
         } else if (response == "poker") {
             poker.play();
         }
+        player.saveCash();
     }
     return 0;
 }

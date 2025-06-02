@@ -7,8 +7,8 @@
 
 
 class OneHandedBandit : public Game {
-    map<char, int> symbolsMultiplierMap; //mapa przechowująca symbole i powiązane z nimi wygrane
-    vector<pair<char, int>> symbolsDistributionMap; //mapa przechowująca symbole i powiązane z nimi wygrane
+    map<char, int> symbolsMultiplierMap; //symbols and associated win mutlipliers
+    vector<pair<char, int>> symbolsDistributionMap; //symbols and its propability distribution
 public:
     OneHandedBandit(Player& player);
     void play() override;
