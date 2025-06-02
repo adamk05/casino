@@ -15,4 +15,10 @@ add_executable(casino main.cpp
         functions/functions.cpp
         functions/functions.h
         games/Blackjack.cpp
-        games/Blackjack.h)
+        games/Blackjack.h
+        games/roulette/Roulette.cpp
+        games/roulette/Roulette.h
+        games/roulette/NumberField.cpp
+        games/roulette/NumberField.h
+        games/roulette/InputException.cpp
+        games/roulette/InputException.h)
