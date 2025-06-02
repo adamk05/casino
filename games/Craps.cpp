@@ -277,6 +277,7 @@ void Craps::settlePropBets(int result) {
     crapsBet = 0;
     fieldBet = 0;
     hiLoBet = 0;
+    wait();
 }
 
 

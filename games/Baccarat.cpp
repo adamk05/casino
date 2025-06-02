@@ -102,6 +102,7 @@ void Baccarat::play() {
             player.winBet(2);
         }
     }
+    wait();
 }
 
 void Baccarat::reset() {
