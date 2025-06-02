@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
+#include <bits/regex_constants.h>
+
 #include "../players/Bot.h"
 #include "../players/Player.h"
 
@@ -81,7 +84,7 @@ void Poker::play() {
                     cout << "Karty na stole: " << endl;
                     displayDeck(table);
                     cout << endl;
-                    cout << "Karty gracza: " << endl;
+                    cout << "Karty gracza: " << " (" << i->checkCards(table) << ")" << endl;
                     displayDeck(player.deck);
                     cout << "Podaj opcję [Fold/Check/Call/Bet/All-in]:" << endl << "> ";
                     cin >> option;
@@ -92,7 +95,7 @@ void Poker::play() {
                         i->setCheck(true);
                         check_line.push_back(i);
                         break;
-                    } if (option == "Call") {
+                    } if (option == "Call" and actual_bet < player.getCash()) {
                         if (actual_bet == 0) {
                             cout << "Nie możesz wykonać Call – nikt jeszcze nie postawił." << endl;
                             wait();
@@ -100,21 +103,22 @@ void Poker::play() {
                             continue;
                         }
                         bet = actual_bet;
-                        i->setBet(bet);
+                        player.setBet(bet);
+                        player.setCash(player.getCash() - bet);
+                        money += bet;
                         pot += bet;
                         break;
-                    } if (option == "Bet") {
+                    } if (option == "Bet" and actual_bet < player.getCash()) {
                         while (true) {
                             cout << "Podaj kwotę:" << endl << "> ";
                             cin >> bet;
 
-                            if (bet > actual_bet) {
-                                if (actual_bet == 0) {
-                                    actual_bet = bet;
-                                    pot += bet;
-                                }
+                            if (bet >= actual_bet) {
+                                actual_bet = bet;
+                                pot += bet;
                                 money += bet;
-                                i->setBet(bet);
+                                player.setBet(bet);
+                                player.setCash(player.getCash() - bet);
                                 break;
                             } else {
                                 cout << "Niepoprawna kwota zakładu. Musi być większa niż aktualny zakład (" << actual_bet << ")" << endl;
@@ -324,26 +328,92 @@ void Poker::reset() const {
 
 void Poker::whoWinsPoker(vector<Players*> line, vector<Card>& table) const {
     vector<Players*> winners;
-    int bestHand = 0;
+    int bestHandValue = 0;
 
     for (auto player : line) {
+        if (player->getFold()) continue; // Skip folded players
+
         vector<Card> combinedCards = player->deck;
         combinedCards.insert(combinedCards.end(), table.begin(), table.end());
 
         string hand = player->checkCards(table);
         int handValue = getHandValue(hand, combinedCards);
 
-        if (handValue > bestHand) {
-            bestHand = handValue;
-            winners = {player}; // Resetuj listę zwycięzców
-        } else if (handValue == bestHand) {
-            winners.push_back(player); // Dodaj gracza do listy zwycięzców
+        if (handValue > bestHandValue) {
+            bestHandValue = handValue;
+            winners = {player};
         }
+        else if (handValue == bestHandValue) {
+            // If same hand value, we need to compare the actual cards
+            bool isBetter = false;
+            if (!winners.empty()) {
+                // Compare the best cards in both hands
+                vector<Card> currentBestCards = winners[0]->deck;
+                currentBestCards.insert(currentBestCards.end(), table.begin(), table.end());
 
+                // Sort both hands in descending order
+                sort(combinedCards.begin(), combinedCards.end(),
+                    [](const Card& a, const Card& b) {
+                        map<string, int> values = {
+                            {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
+                            {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
+                        };
+                        return values[a.value] > values[b.value];
+                    });
+
+                sort(currentBestCards.begin(), currentBestCards.end(),
+                    [](const Card& a, const Card& b) {
+                        map<string, int> values = {
+                            {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
+                            {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
+                        };
+                        return values[a.value] > values[b.value];
+                    });
+
+                // Compare card by card
+                for (size_t i = 0; i < min(combinedCards.size(), currentBestCards.size()); i++) {
+                    map<string, int> values = {
+                        {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
+                        {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
+                    };
+
+                    int currentCard = values[combinedCards[i].value];
+                    int bestCard = values[currentBestCards[i].value];
+
+                    if (currentCard > bestCard) {
+                        isBetter = true;
+                        break;
+                    } else if (currentCard < bestCard) {
+                        break;
+                    }
+                }
+            }
+
+            if (isBetter) {
+                bestHandValue = handValue;
+                winners = {player};
+            } else if (handValue == bestHandValue) {
+                winners.push_back(player);
+            }
+        }
     }
 
-    winners.size() == 1 ? cout << "Wygrał gracz: " << winners[0]->name << endl : cout << "Remis" << endl;
-    wait();
+    if (winners.empty()) {
+        cout << "Wszyscy gracze spasowali!" << endl;
+    } else if (winners.size() == 1) {
+        cout << "Wygrał gracz: " << winners[0]->name << " z układem: " << winners[0]->checkCards(table) << endl;
+        winners[0]->displayHand(table);
+    } else {
+        cout << "Remis między graczami: ";
+        for (size_t i = 0; i < winners.size(); i++) {
+            cout << winners[i]->name;
+            if (i < winners.size() - 1) cout << ", ";
+        }
+        cout << " z układem: " << winners[0]->checkCards(table) << endl;
+        for (auto winner : winners) {
+            winner->displayHand(table);
+        }
+    }
     wait();
     clear();
 }
