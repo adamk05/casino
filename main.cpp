@@ -7,8 +7,6 @@
 #include "games/OneHandedBandit.h"
 
 int main() {
-    SetConsoleOutputCP(437);
-    system("chcp 437");
     Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
