@@ -7,26 +7,17 @@
 #include <exception>
 #include <string>
 
-/*
- * A class representing exception made by user input
- */
+// a class for exceptions caused by user input
 class InputException : public std::exception {
 public:
-    /*
-     * constructor
-     * @param message - exception message
-     */
+    // a constructor
     InputException(const std::string& message);
 
-    /*
-     * returns a message from the exception
-     */
+    // returns the exception message
     const char* what() const noexcept;
 
 private:
-    /*
-     * A message of the exception
-     */
+    // a message for the exception
     const std::string message;
 };
 

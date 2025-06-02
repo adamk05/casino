@@ -1,9 +1,5 @@
 #include "./Roulette.h"
 
-#include <format>
-
-#include "InputException.h"
-
 Roulette::Roulette(Player &player) : Game(player) {
     zeroNumberField = NumberField(0);
     for (int row = 0; row < 3; row++) {
@@ -22,7 +18,7 @@ void Roulette::play() {
 }
 void Roulette::reset() {
     betType = NONE;
-    winningNumbers.clear();
+    betNumbers.clear();
     drawnNumber = -1;
 
     for (int i = 0; i < 3; i++) {
@@ -36,7 +32,7 @@ void Roulette::reset() {
 }
 bool Roulette::showMainMenu() {
     clear();
-    showBetBoard();
+    printBetBoard();
     showBetInfo();
     cout << "Pokaż obstawione numery na stole: " << (areBetsIgnoredOnBoard ? "Wyłączone" : "Włączone") << endl;
     printDashedLine();
@@ -73,7 +69,7 @@ bool Roulette::showMainMenu() {
 }
 
 
-void Roulette::showBetBoard() {
+void Roulette::printBetBoard() {
     cout << setfill('-') << setw(60) << " Stół zakładów " << setw(41) << "\n";
     cout << setfill(' ');
     for (int row = 0; row < 3; row++) {
@@ -129,7 +125,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
     string errorMessage;
     int answer;
     int lowerLimit = 0, upperLimit = 0;
-    vector<int> winningNumbersLocal = {};
+    vector<int> betNumbersLocal = {};
     vector<int> allowedNumbers = {};
 
     if (choice == "1") {
@@ -139,7 +135,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
 
-        winningNumbersLocal.push_back(answer);
+        betNumbersLocal.push_back(answer);
 
         betType = STRAIGHT;
     }
@@ -150,7 +146,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
 
-        winningNumbersLocal.push_back(answer);
+        betNumbersLocal.push_back(answer);
 
         if (answer == 0) {
             allowedNumbers.push_back(1);
@@ -183,7 +179,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         answer = getIntInputEqual(question, allowedNumbers);
 
-        winningNumbersLocal.push_back(answer);
+        betNumbersLocal.push_back(answer);
 
         betType = SPLIT;
     }
@@ -194,7 +190,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
         if (answer == 0) {
-            winningNumbersLocal.push_back(answer);
+            betNumbersLocal.push_back(answer);
             allowedNumbers.push_back(1);
             allowedNumbers.push_back(3);
 
@@ -204,13 +200,13 @@ bool Roulette::handleChosenBetType(const string& choice) {
             }
 
             answer = getIntInputEqual(question, allowedNumbers);
-            winningNumbersLocal.push_back(answer);
-            winningNumbersLocal.push_back(2);
+            betNumbersLocal.push_back(answer);
+            betNumbersLocal.push_back(2);
         } else {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 12; j++) {
                     if (answer == j + 1) {
-                        winningNumbersLocal.push_back(betBoard[i][j].number);
+                        betNumbersLocal.push_back(betBoard[i][j].number);
                     }
                 }
             }
@@ -228,12 +224,12 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
 
-        winningNumbersLocal.push_back(answer);
+        betNumbersLocal.push_back(answer);
 
         if (answer == 0) {
-            winningNumbersLocal.push_back(1);
-            winningNumbersLocal.push_back(2);
-            winningNumbersLocal.push_back(3);
+            betNumbersLocal.push_back(1);
+            betNumbersLocal.push_back(2);
+            betNumbersLocal.push_back(3);
         } else {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 12; j++) {
@@ -274,20 +270,20 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (answer == betBoard[i][j].number) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
 
                     if (designatedCorner == UPPER_LEFT) {
-                        winningNumbersLocal.push_back(betBoard[i][j + 1].number);
-                        winningNumbersLocal.push_back(betBoard[i - 1][j].number);
+                        betNumbersLocal.push_back(betBoard[i][j + 1].number);
+                        betNumbersLocal.push_back(betBoard[i - 1][j].number);
                     } else if (designatedCorner == UPPER_RIGHT) {
-                        winningNumbersLocal.push_back(betBoard[i][j - 1].number);
-                        winningNumbersLocal.push_back(betBoard[i - 1][j].number);
+                        betNumbersLocal.push_back(betBoard[i][j - 1].number);
+                        betNumbersLocal.push_back(betBoard[i - 1][j].number);
                     } else if (designatedCorner == LOWER_LEFT) {
-                        winningNumbersLocal.push_back(betBoard[i][j + 1].number);
-                        winningNumbersLocal.push_back(betBoard[i + 1][j].number);
+                        betNumbersLocal.push_back(betBoard[i][j + 1].number);
+                        betNumbersLocal.push_back(betBoard[i + 1][j].number);
                     } else if (designatedCorner == LOWER_RIGHT) {
-                        winningNumbersLocal.push_back(betBoard[i][j - 1].number);
-                        winningNumbersLocal.push_back(betBoard[i + 1][j].number);
+                        betNumbersLocal.push_back(betBoard[i][j - 1].number);
+                        betNumbersLocal.push_back(betBoard[i + 1][j].number);
                     }
                 }
             }
@@ -308,7 +304,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (answer == j + 1) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -330,7 +326,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (answer == j + 1) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -347,7 +343,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (3 - answer == i) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -364,7 +360,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (j < answer * 4 && j >= (answer - 1) * 4) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -381,7 +377,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (betBoard[i][j].number % 2 == (answer + 1) % 2) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -400,10 +396,10 @@ bool Roulette::handleChosenBetType(const string& choice) {
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
 
         if (answer == 1) {
-            winningNumbersLocal = redNumbers;
+            betNumbersLocal = redNumbers;
             betType = RED;
         } else if (answer == 2) {
-            winningNumbersLocal = blackNumbers;
+            betNumbersLocal = blackNumbers;
             betType = BLACK;
         }
     }
@@ -417,7 +413,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (j  < answer * 6 && j >= (answer - 1) * 6) {
-                    winningNumbersLocal.push_back(betBoard[i][j].number);
+                    betNumbersLocal.push_back(betBoard[i][j].number);
                 }
             }
         }
@@ -428,7 +424,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         }
     }
 
-    if (isInVector(winningNumbersLocal, 0)) {
+    if (isInVector(betNumbersLocal, 0)) {
         zeroNumberField.isBet = true;
     } else {
         zeroNumberField.isBet = false;
@@ -436,7 +432,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
     for (int i = 0 ; i < 3; i++) {
         for (int j = 0; j < 12; j++) {
-            if (isInVector(winningNumbersLocal, betBoard[i][j].number)) {
+            if (isInVector(betNumbersLocal, betBoard[i][j].number)) {
                 betBoard[i][j].isBet = true;
             } else {
                 betBoard[i][j].isBet = false;
@@ -444,7 +440,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         }
     }
 
-    winningNumbers = winningNumbersLocal;
+    betNumbers = betNumbersLocal;
     return true;
 }
 
@@ -479,15 +475,15 @@ void Roulette::showBetInfo() {
         cout << " (wypłata " << betTypeMultiplier(betType) << ":1)";
     cout << endl;
     cout << "Obstawione numery: ";
-    if (winningNumbers.size() == 0) {
+    if (betNumbers.size() == 0) {
         cout << "brak";
     } else {
-        if (isInVector(winningNumbers, 0)) {
+        if (isInVector(betNumbers, 0)) {
             zeroNumberField.printNumberField(true, true);
         }
         for (int i = 0; i < 12; i++) {
             for (int j = 2; j >= 0; j--) {
-                if (isInVector(winningNumbers, betBoard[j][i].number)) {
+                if (isInVector(betNumbers, betBoard[j][i].number)) {
                     betBoard[j][i].printNumberField(true, true);
                 }
             }
@@ -519,7 +515,7 @@ void Roulette::startDraw() {
     cout << endl << endl;
     wait(1);
     if (player.bet != 0 && betType != NONE) {
-        if (isInVector(winningNumbers, drawnNumber)) {
+        if (isInVector(betNumbers, drawnNumber)) {
             cout << "Gratulacje, wygrałeś " << calculateBetPrize() << " PLN!" << endl;
             hasWon = true;
         } else {

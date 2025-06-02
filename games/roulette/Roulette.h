@@ -4,66 +4,71 @@
 #include "../Game.h"
 #include <iostream>
 #include <iomanip>
-#include <set>
 #include "NumberField.h"
 #include "../../functions/functions.h"
-#include <istream>
+#include <format>
+#include "AnsiCodes.h"
+#include "InputException.h"
 
 using namespace std;
 
-//enum defining a type of bet
+// an enum defining a type of bet
 enum BetType {
+    // none of bet types is selected
     NONE,
-    //single number
+    // a single number
     STRAIGHT,
-    //two numbers
+    // two numbers
     SPLIT,
-    //three numbers (row of numbers)
+    // three numbers (row of numbers)
     STREET,
-    //four numbers
+    // four numbers
     SQUARE,
-    //six numbers (two rows of numbers)
+    // six numbers (two rows of numbers)
     DOUBLE_STREET,
-    //column of numbers
+    // a column of numbers
     COLUMN,
-    //dozen of numbers
+    // a dozen of numbers
     DOZEN,
-    //even numbers
+    // even numbers
     EVEN,
-    //odd numbers
+    // odd numbers
     ODD,
-    //red numbers
+    // red numbers
     RED,
-    //black numbers
+    // black numbers
     BLACK,
-    //low numbers (1-18)
+    // low numbers (1-18)
     LOW,
-    //high numbers (19-36)
+    // high numbers (19-36)
     HIGH
 };
 
-/*
- * enum defining a corner where the second applicable number of the SQUARE BetType is present.
- */
+// an enum defining a corner where the second applicable number of the SQUARE BetType is present.
 enum Corner {
-    //upper left corner
+    // an upper left corner
     UPPER_LEFT,
-    //upper right corner
+    // an upper right corner
     UPPER_RIGHT,
-    //lower left corner
+    // a lower left corner
     LOWER_LEFT,
-    //lower right corner
+    // a lower right corner
     LOWER_RIGHT,
 };
 
+// returns a polish name of bet for the provided bet type
 string betTypeName(BetType type);
 
+// returns a bet multiplier for provided bet type
 int betTypeMultiplier(BetType type);
 
+// prints in the console actions stored in vector
 void printActions(const vector<string> &actions);
 
+// prints in the console a line of "-"
 void printDashedLine();
 
+// the actions for the main menu
 const vector<string> mainActions = {
     "1. Wybierz wysokość zakładu",
     "2. Wybierz rodzaj zakładu",
@@ -72,8 +77,10 @@ const vector<string> mainActions = {
     "5. Wyjdź do menu głównego"
 };
 
+// the allowed options for the main menu
 const vector<string> mainOptions = {"1", "2", "3", "4", "5"};
 
+// the actions for picking the bet type
 const vector<string> betTypeActions = {
     "1.  Pojedyńczy numer (35:1)",
     "2.  Dwa numery (17:1)",
@@ -87,65 +94,73 @@ const vector<string> betTypeActions = {
     "10. Niskie / Wysokie (1:1)",
     "11. Anuluj"
 };
-    /*
-    "Typy zakładów:\n"
-    */
 
+// the allowed options for the bet type actions
 const vector<string> betTypeOptions = {
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
 };
 
-
+// a class with the roulette game
 class Roulette : public Game {
 public:
-    /*
-     * type of current bet
-     */
+    // a type of the current bet
     BetType betType = NONE;
 
-    /*
-     * contains numbers that have been bet by the user
-     */
-    vector<int> winningNumbers = {};
+    // contains numbers that have been bet by the user
+    vector<int> betNumbers = {};
 
-    /*
-     * a number that have been drawn by the roulette wheel spin
-     */
+    // a number that have been drawn by the roulette wheel spin
     int drawnNumber = -1;
 
-    /*
-     * logical roulette bet board without 0
-     */
+    // stores logical roulette bet board without 0
     NumberField betBoard[3][12];
 
-    /*
-     * logical field on bet board for 0
-     */
+    // a logical field for 0 from the bet board
     NumberField zeroNumberField;
-    /*
-     * determines if bet numbers should be shown on main bet board;
-     */
+
+    // determines if the bet numbers should be shown on the main bet board
     bool areBetsIgnoredOnBoard = true;
 
-    /*
-     * constructor of class Roulette, creates logical roulette bet board.
-     */
+    // a constructor of the class Roulette, creates a logical roulette bet board
     explicit Roulette(Player &player);
+
+    // contains the main game loop
     void play() override;
+
+    // resets class fields to their default values
     void reset() override;
+
+    // shows the main decision menu
     bool showMainMenu();
-    /*
-     * shows the roulette bet board.
-     */
-    void showBetBoard();
+
+    // prints the roulette bet board in the console
+    void printBetBoard();
+
+    // shows the menu with picking the type of the bet
     void showBetTypeMenu();
+
+    // shows the menu where the value of the bet is determined
     void showBetValueMenu();
+
+    // shows basic information about the bet and player
     void showBetInfo();
+
+    // performs a roulette wheel draw
     void startDraw();
+
+    // handles operations to place a bet
     void placeBet(int betValue);
+
+    // cancels the current bet
     void cancelBet();
+
+    // handles winning or losing a bet
     void settleBet(bool isWon);
+
+    // calculates the possible bet prize
     int calculateBetPrize();
+
+    // handles the bet placing logic
     bool handleChosenBetType(const string& choice);
 };
 

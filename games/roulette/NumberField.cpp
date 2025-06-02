@@ -1,6 +1,4 @@
 #include "NumberField.h"
-#include "AnsiCodes.h"
-#include "../../functions/functions.h"
 
 NumberField::NumberField() {
     number = 0;

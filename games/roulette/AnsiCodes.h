@@ -3,6 +3,11 @@
 
 using namespace std;
 
+/*
+ * these are ANSI escape codes that are used in order to change background color and text color of the terminal / console
+ * or to reset all the manipulations made
+ */
+
 const string RESET = "\033[0m";
 const string RED_BG = "\033[48;5;160m";
 const string BLACK_BG = "\033[48;5;16m";
