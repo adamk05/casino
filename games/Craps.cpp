@@ -50,6 +50,7 @@ void Craps::play() {
             if (propBetResponse == "a") {
                 if (any7Bet != 0) {
                     cout << "Obstawiłeś już any 7 w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -65,6 +66,7 @@ void Craps::play() {
             } else if (propBetResponse == "y") {
                 if (yoBet != 0) {
                     cout << "Obstawiłeś już Yo w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -80,6 +82,7 @@ void Craps::play() {
             } else if (propBetResponse == "h") {
                 if (hiLoBet != 0) {
                     cout << "Obstawiłeś już Hi-Lo w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -95,6 +98,7 @@ void Craps::play() {
             } else if (propBetResponse == "c") {
                 if (crapsBet != 0) {
                     cout << "Obstawiłeś już Craps w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -110,6 +114,7 @@ void Craps::play() {
             } else if (propBetResponse == "f") {
                 if (fieldBet != 0) {
                     cout << "Obstawiłeś już Field w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
