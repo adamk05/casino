@@ -23,4 +23,11 @@ add_executable(casino main.cpp
         games/Craps.cpp
         games/Craps.h
         games/OneHandedBandit.cpp
-        games/OneHandedBandit.h)
+        games/OneHandedBandit.h
+        games/Blackjack.h
+        games/roulette/Roulette.cpp
+        games/roulette/Roulette.h
+        games/roulette/NumberField.cpp
+        games/roulette/NumberField.h
+        games/roulette/InputException.cpp
+        games/roulette/InputException.h)
