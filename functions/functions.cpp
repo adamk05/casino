@@ -1,5 +1,7 @@
 #include "functions.h"
 
+#include "../games/roulette/InputException.h"
+
 #ifdef _WIN32
 #define NOMINMAX
 #define byte win_byte_override
@@ -27,11 +29,11 @@ void clear() {
 #endif
 }
 
-void wait() {
+void wait(int seconds) {
 #ifdef _WIN32
-    Sleep(3000);
+    Sleep(seconds * 1000);
 #else
-    sleep(3);
+    sleep(seconds);
 #endif
 }
 
@@ -44,6 +46,48 @@ float getFloatInput(string question) {
             return stof(input);
         } catch (...) {
             cout << "To nie jest liczba.\n";
+        }
+    }
+}
+
+int getIntInputEqual(string question, vector<int> allowedValues, string errorMessage) {
+    string input;
+    int answer;
+    while (true) {
+        cout << question << endl;
+        getline(cin, input);
+        try {
+            answer = stoi(input);
+            for (int value: allowedValues) {
+                if (value == answer) {
+                    return answer;
+                }
+            }
+            throw InputException("Nie można wybrać takiego numeru!");
+        } catch (InputException& e) {
+            cout << e.what() << endl;
+        } catch (...) {
+            cout << errorMessage << endl;
+        }
+    }
+}
+
+int getIntInputLimited(string question, int lowerLimit, int upperLimit, string errorMessage) {
+    string input;
+    int answer;
+    while (true) {
+        cout << question << endl;
+        getline(cin, input);
+        try {
+            answer = stoi(input);
+            if (answer < lowerLimit || answer > upperLimit) {
+                throw InputException("Numer jest z poza zakresu!");
+            }
+            return answer;
+        } catch (InputException& e) {
+            cout << e.what() << endl;
+        } catch (...) {
+            cout << errorMessage << endl;
         }
     }
 }
@@ -63,7 +107,7 @@ bool yesNoResponse(string question) {
     }
 }
 
-string multiChoiceResponse(string question, vector<string> options) {
+string multiChoiceResponse(string question, vector<string> options, string errorMessage) {
     string input;
     while (true) {
         cout << question << endl;
@@ -73,7 +117,7 @@ string multiChoiceResponse(string question, vector<string> options) {
                 return options.at(i);
             }
         }
-        cout << "Nieprawidłowa odpowiedź!" << endl;
+        cout << errorMessage << endl;
     }
 }
 
@@ -84,6 +128,14 @@ string toLower(string str) {
     return str;
 }
 
+bool isInVector(const vector<int>& vec, const int& value) {
+    for (int number : vec) {
+        if (number == value) {
+            return true;
+        }
+    }
+    return false;
+}
 
 
 

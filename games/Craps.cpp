@@ -27,10 +27,18 @@ void Craps::play() {
         cout << "Nie masz wystarczająco punktów (masz " << player.cash << ")" << endl;
     }
 
+    clear();
+
     while (true) {
+        // players gets the opportunity to place any ammount of prop bets. He can place one bet at the time, after it was placed
+        // he is asked again to place a bet. When he decides he is done he presses "n". Player can't place 2 different bets for same thing
         string propBetResponse = "";
         while (propBetResponse != "n") {
-            question = "Dostępne zakłady poboczne: any 7 (7)/ Yo (11) / Hi-Lo (2 lub 12) / Craps (2, 3, lub 12) / Field (2, 3, 4, 9, 10, 11, 12)\n Czy chcesz obstawić jakiś zakład poboczny? (a - any 7 / y - yo / h - hi-lo / c - craps / f -field / n - nie chcę stawiać pobocznego zakładu)";
+            if (player.cash == 0) {
+                cout << "Nie masz punktów, nie możesz obstawić nowego zakładu" << endl;
+                break;
+            }
+            question = "Dostępne zakłady poboczne:\n any 7 (7)\n Yo (11)\n Hi-Lo (2 lub 12)\n Craps (2, 3, lub 12)\n Field (2, 3, 4, 9, 10, 11, 12)\nCzy chcesz obstawić jakiś zakład poboczny? (a - any 7 / y - yo / h - hi-lo / c - craps / f -field / n - nie chcę stawiać pobocznego zakładu)";
             vector <string> propBetOptions;
             propBetOptions.push_back("a");
             propBetOptions.push_back("y");
@@ -42,6 +50,7 @@ void Craps::play() {
             if (propBetResponse == "a") {
                 if (any7Bet != 0) {
                     cout << "Obstawiłeś już any 7 w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -57,6 +66,7 @@ void Craps::play() {
             } else if (propBetResponse == "y") {
                 if (yoBet != 0) {
                     cout << "Obstawiłeś już Yo w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -72,6 +82,7 @@ void Craps::play() {
             } else if (propBetResponse == "h") {
                 if (hiLoBet != 0) {
                     cout << "Obstawiłeś już Hi-Lo w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -87,6 +98,7 @@ void Craps::play() {
             } else if (propBetResponse == "c") {
                 if (crapsBet != 0) {
                     cout << "Obstawiłeś już Craps w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -102,6 +114,7 @@ void Craps::play() {
             } else if (propBetResponse == "f") {
                 if (fieldBet != 0) {
                     cout << "Obstawiłeś już Field w tej rundzie" << endl;
+                    wait();
                 } else {
                     question ="Ile obstawiasz?";
                     while (true) {
@@ -115,9 +128,11 @@ void Craps::play() {
                     }
                 }
             }
+            clear();
         }
         cout << "Kości zostały rzucone..." << endl;
         wait();
+        clear();
         int dice1 = randomize(1, 6);
         int dice2 = randomize(1, 6);
         cout << "Kość 1: " << dice1 << endl;
@@ -159,6 +174,7 @@ void Craps::play() {
 
             cout << "Ustanawia się point na " << result << endl;
             wait();
+            clear();
             point = result;
             settlePropBets(result);
             cout << "Gra trwa dalej, kolejne zakłady, kolejny rzut" << endl;
@@ -266,6 +282,7 @@ void Craps::settlePropBets(int result) {
     crapsBet = 0;
     fieldBet = 0;
     hiLoBet = 0;
+    wait();
 }
 
 

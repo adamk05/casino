@@ -12,15 +12,20 @@ class Player : public Players {
 public:
     float bet;
 
+    Player();
+
     Player(string name);
+
+    Player(string name, float cash);
 
     void winBet(float multiplier);
 
     void winIndependentBet(float ammount);
 
-    double getCash();
-    void setCash(double money);
+    void saveCash();
 };
+
+Player initFromFile();
 
 
 

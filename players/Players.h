@@ -14,6 +14,7 @@ class Players {
     bool isAllIn = false;
 public:
     Players(string name);
+    Players(string name, float cash);
     string name;
     vector<Card> deck;
     float cash = 500;

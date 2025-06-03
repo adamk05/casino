@@ -9,6 +9,11 @@ using namespace std;
 
 Players::Players(string name) : name(name) {}
 
+Players::Players(string name, float cash) : name(name), cash(cash) {
+
+}
+
+
 bool Players::operator==(const Players& other) const {
     return name == other.name;
 }
