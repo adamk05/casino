@@ -7,6 +7,8 @@
 
 using namespace std;
 
+Players::Players() { }
+
 Players::Players(string name) : name(name) {}
 
 Players::Players(string name, float cash) : name(name), cash(cash) {
@@ -146,6 +148,14 @@ double Players::getBet() {
 
 void Players::setBet(double money) {
     bet = money;
+}
+
+double Players::getCash() {
+    return cash;
+}
+
+void Players::setCash(double money) {
+    cash = money;
 }
 
 double Players::decideBetAmount(double actual_bet) {

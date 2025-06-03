@@ -26,9 +26,7 @@ int main() {
         // system("cls");
         clear();
         player = initFromFile();
-        string question = "W co chcesz zagrać? (blackjack / bakarat / craps / bandyta / ruletka)";
-        cout << "Cześć " << player.name << endl;
-        cout << "Masz " << player.cash << " punktów" << endl;
+        string question = "W co chcesz zagrać? (blackjack / bakarat / craps / bandyta / ruletka / poker)";
         vector <string> gameOptions;
         gameOptions.push_back("blackjack");
         gameOptions.push_back("bakarat");

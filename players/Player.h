@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <vector>
 #include <string>
+#include <fstream>
 
 #include "Players.h"
 #include "../deck/deck.h"

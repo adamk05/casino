@@ -13,6 +13,7 @@ class Players {
     bool isCheck = false;
     bool isAllIn = false;
 public:
+    Players();
     Players(string name);
     Players(string name, float cash);
     string name;
