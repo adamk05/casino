@@ -8,7 +8,7 @@ using namespace std;
 #ifndef DECK_H
 #define DECK_H
 
-// Struktura talii
+// The structure of a deck
 struct Card {
     string color;
     string value;

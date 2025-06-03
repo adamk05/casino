@@ -4,15 +4,13 @@
 #include <string>
 #include <fstream>
 
+#include "Players.h"
 #include "../deck/deck.h"
 
 using namespace std;
 
-class Player {
+class Player : public Players {
 public:
-    string name;
-    float cash;
-    vector<Card> deck;
     float bet;
 
     Player();

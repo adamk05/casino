@@ -17,7 +17,7 @@ public:
 
     Croupier();
 
-    void giveCard(Player& player);
+    void giveCard(Players& player);
     void giveCard(vector<Card>& givenDeck);
     void giveCardToYourself();
     void clearUsedIndexes();
@@ -25,4 +25,4 @@ public:
 
 
 
-#endif //CROUPIER_H
+#endif
