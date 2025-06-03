@@ -10,8 +10,6 @@
 #include "games/Poker.h"
 
 int main() {
-    SetConsoleOutputCP(437);
-    system("chcp 437");
     Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
@@ -26,7 +24,7 @@ int main() {
         // system("cls");
         clear();
         player = initFromFile();
-        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta)";
+        string question = "W co chcesz zagrać? (blackjack/bakarat/craps/bandyta/poker)";
         vector <string> gameOptions;
         gameOptions.push_back("blackjack");
         gameOptions.push_back("bakarat");

@@ -7,7 +7,11 @@
 
 using namespace std;
 
+Players::Players() {}
+
 Players::Players(string name) : name(name) {}
+
+Players::Players(string name, float cash) : name(name), cash(cash) {}
 
 bool Players::operator==(const Players& other) const {
     return name == other.name;
@@ -18,98 +22,43 @@ void Players::displayHand(const vector<Card>& table) const {
     for (const auto& card : deck) cout << card.value << " " << card.color << endl;
 }
 
-string Players::checkCards(const vector<Card> &table) const {
-    map<string, int> colorsDict;
-    colorsDict["Karo"] = 1;
-    colorsDict["Trefl"] = 2;
-    colorsDict["Pik"] = 3;
-    colorsDict["Kier"] = 4;
+string Players::checkCards(const vector<Card>& cards) const {
+    map<string, int> colorsDict = {
+        {"Karo", 1}, {"Trefl", 2}, {"Pik", 3}, {"Kier", 4}
+    };
+
+    map<string, int> valuesDict = {
+        {"2", 2}, {"3", 3}, {"4", 4}, {"5", 5}, {"6", 6}, {"7", 7},
+        {"8", 8}, {"9", 9}, {"10", 10}, {"Walet", 11}, {"Dama", 12},
+        {"Król", 13}, {"As", 14}
+    };
 
     vector<int> colors;
-
-    for (const auto & i : deck) colors.push_back(colorsDict[i.color]);
-
-    if (!table.empty()) for (const auto & i : table) colors.push_back(colorsDict[i.color]);
-
-    sort(colors.begin(), colors.end());
-
-    map<string, int> valuesDict;
-    valuesDict["2"] = 2;
-    valuesDict["3"] = 3;
-    valuesDict["4"] = 4;
-    valuesDict["5"] = 5;
-    valuesDict["6"] = 6;
-    valuesDict["7"] = 7;
-    valuesDict["8"] = 8;
-    valuesDict["9"] = 9;
-    valuesDict["10"] = 10;
-    valuesDict["Walet"] = 11;
-    valuesDict["Dama"] = 12;
-    valuesDict["Król"] = 13;
-    valuesDict["As"] = 14;
-
     vector<int> values;
 
-    for (const auto & i : deck) values.push_back(valuesDict[i.value]);
-
-    if (!table.empty()) for (const auto & i : table) values.push_back(valuesDict[i.value]);
+    for (const auto& card : cards) {
+        values.push_back(valuesDict[card.value]);
+        colors.push_back(colorsDict[card.color]);
+    }
 
     sort(values.begin(), values.end());
 
-    switch (values.size()) {
-        case 2:
-            return repeated(values, 2) ? "Para" : "Wysoka karta";
-        case 3:
-            if (repeated(values, 3)) return "Trójka";
-            if (repeated(values, 2)) return "Para";
-            return  "Wysoka karta";
-        case 4:
-            if (repeated(values, 4)) return "Kareta";
-            if (repeated(values, 3)) return "Trójka";
-            if (repeatedPairs(values, 2)) return "Dwie pary";
-            if (repeated(values, 2)) return "Para";
-            return "Wysoka karta";
-        case 5:
-            if (isRoyalFlush(values, colors)) return "Poker królewski";
-            if (isStraightFlush(values, colors)) return "Poker";
-            if (repeated(values, 4)) return "Kareta";
-            if (isFull(values)) return "Ful";
-            if (repeated(colors, 5)) return "Kolor";
-            if (isStraight(values)) return "Strit";
-            if (repeated(values, 3)) return "Trójka";
-            if (repeatedPairs(values, 2)) return "Dwie pary";
-            if (repeated(values, 2)) return "Para";
-            return "Wysoka karta";
-        case 6:
-            if (isRoyalFlush(values, colors)) return "Poker królewski";
-            if (isStraightFlush(values, colors)) return "Poker";
-            if (repeated(values, 4)) return "Kareta";
-            if (isFull(values)) return "Ful";
-            if (repeated(colors, 5)) return "Kolor";
-            if (isStraight(values)) return "Strit";
-            if (repeated(values, 3)) return "Trójka";
-            if (repeatedPairs(values, 2)) return "Dwie pary";
-            if (repeated(values, 2)) return "Para";
-            return "Wysoka karta";
-        case 7:
-            if (isRoyalFlush(values, colors)) return "Poker królewski";
-            if (isStraightFlush(values, colors)) return "Poker";
-            if (repeated(values, 4)) return "Kareta";
-            if (isFull(values)) return "Ful";
-            if (repeated(colors, 5)) return "Kolor";
-            if (isStraight(values)) return "Strit";
-            if (repeated(values, 3)) return "Trójka";
-            if (repeatedPairs(values, 2)) return "Dwie pary";
-            if (repeated(values, 2)) return "Para";
-            return "Wysoka karta";
-        default:
-            return "Wysoka karta";
-    }
+    // UWAGA: nie robimy warunków typu values.size() == x
+    // Zawsze mamy 7 kart (2 ręka + 5 ze stołu), więc robimy analizę jak w Texas Hold'em
 
-    colors.clear();
-    values.clear();
+    if (isRoyalFlush(values, colors)) return "Poker królewski";
+    if (isStraightFlush(values, colors)) return "Poker";
+    if (repeated(values, 4)) return "Kareta";
+    if (isFull(values)) return "Ful";
+    if (repeated(colors, 5)) return "Kolor";
+    if (isStraight(values)) return "Strit";
+    if (repeated(values, 3)) return "Trójka";
+    if (repeatedPairs(values, 2)) return "Dwie pary";
+    if (repeated(values, 2)) return "Para";
+
     return "Wysoka karta";
 }
+
 
 bool Players::getFold() const {
     return isFold;
@@ -141,6 +90,14 @@ double Players::getBet() {
 
 void Players::setBet(double money) {
     bet = money;
+}
+
+float Players::getCash() {
+    return cash;
+}
+
+void Players::setCash(float money) {
+    cash = money;
 }
 
 double Players::decideBetAmount(double actual_bet) {

@@ -1,13 +1,12 @@
 #include "Player.h"
 
-Player::Player() { }
+Player::Player() : Players(), bet(0) { }
 
-Player::Player(string name) : name(name), cash(500), bet(0) { }
 Player::Player(string name) : Players(name), bet(0) {
     this->cash = 500;
 }
 
-Player::Player(string name, float cash) : name(name), cash(cash), bet(0) { }
+Player::Player(string name, float cash) : Players(name, cash), bet(0) { }
 
 
 void Player::winBet(float multiplier) {
@@ -17,14 +16,6 @@ void Player::winBet(float multiplier) {
 
 void Player::winIndependentBet(float ammount) {
     cash += ammount;
-}
-
-double Player::getCash() {
-    return cash;
-}
-
-void Player::setCash(double money) {
-    this->cash = money;
 }
 
 Player initFromFile() {

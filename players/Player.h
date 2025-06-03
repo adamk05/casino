@@ -9,11 +9,8 @@
 
 using namespace std;
 
-class Player {
+class Player : public Players {
 public:
-    string name;
-    float cash;
-    vector<Card> deck;
     float bet;
 
     Player();
@@ -25,9 +22,6 @@ public:
     void winBet(float multiplier);
 
     void winIndependentBet(float ammount);
-
-    double getCash();
-    void setCash(double money);
 
     void saveCash();
 };
