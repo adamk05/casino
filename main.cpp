@@ -10,7 +10,9 @@
 #include "games/roulette/Roulette.h"
 #include "games/Poker.h"
 
+
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
     Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
