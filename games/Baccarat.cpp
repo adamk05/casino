@@ -104,7 +104,7 @@ void Baccarat::play() {
     }
     string temp;
     cout << "Kliknij enter by kontynuować" << endl;
-    cin >> temp;
+    getline(cin, temp);
 }
 
 void Baccarat::reset() {

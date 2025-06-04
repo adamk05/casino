@@ -171,7 +171,7 @@ void Craps::play() {
                 }
                 string temp;
                 cout << "Kliknij enter by kontynuować" << endl;
-                cin >> temp;
+                getline(cin, temp);
                 return;
             }
 
@@ -192,7 +192,7 @@ void Craps::play() {
                 }
                 string temp;
                 cout << "Kliknij enter by kontynuować" << endl;
-                cin >> temp;
+                getline(cin, temp);
                 return;
             }
 
@@ -217,7 +217,7 @@ void Craps::play() {
                 }
                 string temp;
                 cout << "Kliknij enter by kontynuować" << endl;
-                cin >> temp;
+                getline(cin, temp);
                 return;
             }
             if (result == point) {
@@ -232,7 +232,7 @@ void Craps::play() {
                 }
                 string temp;
                 cout << "Kliknij enter by kontynuować" << endl;
-                cin >> temp;
+                getline(cin, temp);
                 return;
             }
             settlePropBets(result);
