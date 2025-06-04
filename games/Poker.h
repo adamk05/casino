@@ -2,12 +2,14 @@
 #define POCKER_H
 #include "../players/Croupier.h"
 #include "../players/Player.h"
+#include "../players/Players.h"
 #include "../players/Bot.h"
 #include "../functions/poker.h"
 
 class Poker {
     Player& player;
     Croupier& croupier;
+    double actual_bet = 0, pot = 0;
     Bot& bob;
     Bot& john;
     Bot& tim;

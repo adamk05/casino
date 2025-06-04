@@ -13,8 +13,8 @@ class Players {
     bool isCheck = false;
     bool isAllIn = false;
 public:
-    Players();
     Players(string name);
+    Players();
     Players(string name, float cash);
     string name;
     vector<Card> deck;
@@ -53,9 +53,9 @@ public:
     // Ustawia wartość zakładu
     void setBet(double money);
 
-    double getCash();
+    float getCash();
 
-    void setCash(double money);
+    void setCash(float money);
 
     double decideBetAmount(double actual_bet);
 };
