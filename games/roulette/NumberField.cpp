@@ -19,7 +19,7 @@ void NumberField::printNumberField(bool ignoreBet, bool fitNumber) {
     string bgColor;
 
     if (!ignoreBet && isBet) {
-        bgColor = LIGHT_BLUE_BG;
+        bgColor = MAGENTA_BG;
     } else if (number == 0) {
         bgColor = GREEN_BG;
     } else if (isRed) {

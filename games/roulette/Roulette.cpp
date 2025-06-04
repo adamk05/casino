@@ -78,7 +78,7 @@ void Roulette::printBetBoard() {
                 if (row == 1)
                     zeroNumberField.printNumberField(areBetsIgnoredOnBoard);
                 else
-                    cout << (zeroNumberField.isBet ? LIGHT_BLUE_BG : GREEN_BG) << WHITE_TXT<< setw(4) << "" << "  " << RESET<< " ";
+                    cout << (zeroNumberField.isBet ? MAGENTA_BG : GREEN_BG) << WHITE_TXT<< setw(4) << "" << "  " << RESET<< " ";
             }
             betBoard[row][col].printNumberField(areBetsIgnoredOnBoard);
             if (col == 11) {
