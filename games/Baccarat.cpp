@@ -102,7 +102,9 @@ void Baccarat::play() {
             player.winBet(2);
         }
     }
-    wait();
+    string temp;
+    cout << "Kliknij enter by kontynuować" << endl;
+    cin >> temp;
 }
 
 void Baccarat::reset() {

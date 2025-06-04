@@ -64,7 +64,9 @@ void OneHandedBandit::play() {
     } else {
         cout << "Przegrałeś" << endl;
     }
-    wait();
+    string temp;
+    cout << "Kliknij enter by kontynuować" << endl;
+    cin >> temp;
 }
 
 void OneHandedBandit::reset() { }

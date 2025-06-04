@@ -169,6 +169,9 @@ void Craps::play() {
                     cout << "Przegrywasz zakład Don't Pass" << endl;
                     settlePropBets(result);
                 }
+                string temp;
+                cout << "Kliknij enter by kontynuować" << endl;
+                cin >> temp;
                 return;
             }
 
@@ -187,6 +190,9 @@ void Craps::play() {
                         settlePropBets(result);
                     }
                 }
+                string temp;
+                cout << "Kliknij enter by kontynuować" << endl;
+                cin >> temp;
                 return;
             }
 
@@ -209,6 +215,9 @@ void Craps::play() {
                     player.winBet(2);
                     settlePropBets(result);
                 }
+                string temp;
+                cout << "Kliknij enter by kontynuować" << endl;
+                cin >> temp;
                 return;
             }
             if (result == point) {
@@ -221,6 +230,9 @@ void Craps::play() {
                     cout << "Przegrywasz zakład Don't Pass" << endl;
                     settlePropBets(result);
                 }
+                string temp;
+                cout << "Kliknij enter by kontynuować" << endl;
+                cin >> temp;
                 return;
             }
             settlePropBets(result);
