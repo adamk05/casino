@@ -25,7 +25,6 @@ int main() {
     Poker poker(player, croupier, bob, john, tim);
     Roulette roulette(player);
     while (true) {
-        // system("cls");
         clear();
         player = initFromFile();
         string question = "W co chcesz zagrać? (blackjack / bakarat / craps / bandyta / ruletka / poker)";
