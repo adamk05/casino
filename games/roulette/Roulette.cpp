@@ -148,14 +148,17 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         betNumbersLocal.push_back(answer);
 
+        // allows 1, 2 and 3 to be picked when the first number is 0
         if (answer == 0) {
             allowedNumbers.push_back(1);
             allowedNumbers.push_back(2);
             allowedNumbers.push_back(3);
         } else {
+            // allows 0 when the first picked number is 1,2 or 3
             if (answer == 1 || answer == 2 || answer == 3) {
                 allowedNumbers.push_back(0);
             }
+            //checks possible numbers that are next to the first picked one
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 12; j++) {
                     if (answer == betBoard[i][j].number) {
@@ -189,6 +192,8 @@ bool Roulette::handleChosenBetType(const string& choice) {
         upperLimit = 12;
 
         answer = getIntInputLimited(question, lowerLimit, upperLimit);
+
+        // enables to bet two special combinations (0-1-2, 0-2-3) when 0 is picked
         if (answer == 0) {
             betNumbersLocal.push_back(answer);
             allowedNumbers.push_back(1);
@@ -219,6 +224,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
         lowerLimit = 0;
         upperLimit = 36;
 
+        // holds corners where are possible values to pair with the first picked number
         vector<Corner> numberCorners = {};
         Corner designatedCorner = {};
 
@@ -226,11 +232,13 @@ bool Roulette::handleChosenBetType(const string& choice) {
 
         betNumbersLocal.push_back(answer);
 
+        //creates special bet with 0
         if (answer == 0) {
             betNumbersLocal.push_back(1);
             betNumbersLocal.push_back(2);
             betNumbersLocal.push_back(3);
         } else {
+            // looks for available numbers on the corners of the first picked number
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 12; j++) {
                     if (answer == betBoard[i][j].number) {
@@ -267,6 +275,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
             }
         }
 
+        // adds two last numbers to the bet thanks to the knowledge of the Corner where the second number was picked
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 12; j++) {
                 if (answer == betBoard[i][j].number) {
@@ -309,6 +318,7 @@ bool Roulette::handleChosenBetType(const string& choice) {
             }
         }
 
+        // checks for possible columns that are next to the first picked one
         if ((answer - 1) >= 1) {
             allowedNumbers.push_back(answer - 1);
         }
@@ -424,12 +434,14 @@ bool Roulette::handleChosenBetType(const string& choice) {
         }
     }
 
+    //sets if 0 field is bet or not
     if (isInVector(betNumbersLocal, 0)) {
         zeroNumberField.isBet = true;
     } else {
         zeroNumberField.isBet = false;
     }
 
+    //sets if corresponding fields are bet or not
     for (int i = 0 ; i < 3; i++) {
         for (int j = 0; j < 12; j++) {
             if (isInVector(betNumbersLocal, betBoard[i][j].number)) {

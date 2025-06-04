@@ -23,7 +23,7 @@ Player initFromFile() {
     string nick;
     float cash;
     if (file >> nick >> cash) {
-        cout << "Cześć " << nick << " masz " << cash << "punktów" << endl;
+        cout << "Cześć " << nick << " masz " << cash << " punktów" << endl;
         return Player(nick, cash);
     } else {
         cout << "Podaj swój nickname: ";
