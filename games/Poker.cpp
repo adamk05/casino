@@ -36,6 +36,9 @@ void Poker::play() {
 
     croupier.giveCard(table);
     croupier.giveCard(table);
+    croupier.giveCard(table);
+    croupier.giveCard(table);
+    croupier.giveCard(table);
     cout << "Karty na stole: " << endl;
     displayDeck(table);
     cout << endl;
@@ -287,81 +290,88 @@ void Poker::reset() const {
 }
 
 void Poker::whoWinsPoker(vector<Players*> line, vector<Card>& table) const {
+    vector<pair<Players*, pair<int, vector<Card>>>> playersScore;
     vector<Players*> winners;
     int bestHandValue = 0;
     vector<Card> bestHand;
 
+    cout << "Karty na stole: " << endl;
+    displayDeck(table);
+    cout << endl << "Karty graczy: " << endl;
+
+    //checking every player's highest combination, saving it to vector
     for (auto player : line) {
-        if (player->getFold()) continue; // Pomijamy graczy, którzy spasowali
-
-        vector<Card> combinedCards = player->deck;
-        combinedCards.insert(combinedCards.end(), table.begin(), table.end());
-
-        string hand = player->checkCards(table); // e.g. "Para", "Strit", itd.
-        int handValue = getHandValue(hand, combinedCards);
-
-        if (handValue > bestHandValue) {
-            bestHandValue = handValue;
-            winners = {player};
-            bestHand = combinedCards;
-        }
-        else if (handValue == bestHandValue) {
-            // Remis ręki – porównanie najwyższych kart
-            sort(combinedCards.begin(), combinedCards.end(), [](const Card& a, const Card& b) {
-                static map<string, int> values = {
-                    {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                    {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                };
-                return values[a.value] > values[b.value];
-            });
-
-            sort(bestHand.begin(), bestHand.end(), [](const Card& a, const Card& b) {
-                static map<string, int> values = {
-                    {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                    {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                };
-                return values[a.value] > values[b.value];
-            });
-
-            for (size_t i = 0; i < min(combinedCards.size(), bestHand.size()); ++i) {
-                static map<string, int> values = {
-                    {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                    {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                };
-                int valA = values[combinedCards[i].value];
-                int valB = values[bestHand[i].value];
-
-                if (valA > valB) {
-                    winners = {player};
-                    bestHand = combinedCards;
-                    break;
-                } else if (valA < valB) {
-                    break;
-                } else {
-                    continue;
+        cout << player->name << ": " << endl;
+        displayDeck(player->deck);
+        cout << endl;
+        if (player->getFold()) continue;
+        int playerHighestCombinationValue = 0;
+        vector<Card> playerHighestCombination;
+        vector<Card> combinedCards = table;
+        combinedCards.push_back(player->deck[0]);
+        combinedCards.push_back(player->deck[1]);
+        for (int i = 0; i < combinedCards.size(); i++) {
+            for (int j = 0; j < combinedCards.size(); j++) {
+                if (i != j) {
+                    vector<Card> currentlyConsidered;
+                    for (int k = 0; k < combinedCards.size(); k++) {
+                        if (k != i && k != j) {
+                            currentlyConsidered.push_back(combinedCards[k]);
+                        }
+                    }
+                    string res = checkCards(currentlyConsidered);
+                    int handValue = getHandValue(res, currentlyConsidered);
+                    if (handValue > playerHighestCombinationValue) {
+                        playerHighestCombinationValue = handValue;
+                        playerHighestCombination = currentlyConsidered;
+                    }
                 }
             }
+        }
+        playersScore.push_back(make_pair(player, make_pair(playerHighestCombinationValue, playerHighestCombination)));
+    }
 
-            // Jeśli wszystko równe, dodajemy do zwycięzców
-            if (!winners.empty() && find(winners.begin(), winners.end(), player) == winners.end()) winners.push_back(player);
+    for (auto score : playersScore) {
+        if (score.second.first > bestHandValue) {
+            bestHandValue = score.second.first;
         }
     }
+
+    for (auto score : playersScore) {
+        if (score.second.first == bestHandValue) {
+            winners.push_back(score.first);
+        }
+    }
+
+    map<int, std::string> handValues;
+    handValues[1] = "Wysoka karta";
+    handValues[2] = "Para";
+    handValues[3] = "Dwie pary";
+    handValues[4] = "Trójka";
+    handValues[5] = "Strit";
+    handValues[6] = "Kolor";
+    handValues[7] = "Ful";
+    handValues[8] = "Kareta";
+    handValues[9] = "Poker";
+    handValues[10] = "Poker królewski";
 
     if (winners.size() == 1) {
-        cout << "Wygrał gracz " << winners[0]->name << "!" << endl;
+        cout << "Wygrał " << winners[0]->name << endl;
+        cout << "Kombinacja " << handValues[bestHandValue];
         winners[0]->setCash(winners[0]->getCash() + pot);
-        cout << "z układem: " << winners[0]->checkCards(table) << endl;
-        for (auto winner : winners) winner->displayHand(table);
-    } else {
-        cout << "Remis między: ";
-        for (auto* p : winners) {
-            cout << p->name << " ";
-            p->setCash(p->getCash() + pot / winners.size());
-        }
-        for (auto* p : winners) for (auto card : p->deck) cout << p->name << " (" << p->checkCards(table) << ")" << endl << card.value << " " << card.color << endl;
-        cout << endl;
     }
 
-    wait();
-    reset();
+    //if more than one player has the winning combination the win is splitted
+    else {
+        int win = pot / winners.size();
+        cout << "Remis, stawkę dzieli się na " << win << " ,zwycięzcy:" << endl;
+        for (auto winner : winners) {
+            cout << winner->name << " " << handValues[bestHandValue] << endl;
+            winner->setCash(winner->getCash() + win);
+        }
+    }
+
+    string temporary;
+    cout << endl << "Wciśnij Enter, żeby kontynuować...";
+    getline(cin, temporary);
 }

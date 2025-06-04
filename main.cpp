@@ -24,6 +24,7 @@ int main() {
     Bot bob("bob", 0.7);
     Poker poker(player, croupier, bob, john, tim);
     Roulette roulette(player);
+    vector<Card> table;
     while (true) {
         clear();
         player = initFromFile();
