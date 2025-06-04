@@ -21,8 +21,7 @@ public:
     bool isWorth(vector<int>& values, vector<int>& colors) const;
 
     // Strategy for a bot
-    string strategy(const vector<Card>& table, int actual_bet);
-
+    string strategy(const vector<Card>& table, int actual_bet, int pot);
 
 };
 

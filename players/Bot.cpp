@@ -24,119 +24,93 @@ bool Bot::isWorth(vector<int>& values, vector<int>& colors) const {
         repeated(values, 2);
 }
 
+string Bot::strategy(const vector<Card>& table, int actualBet, int pot) {
+    map<string, int> colorsDict = {{"Karo", 1}, {"Trefl", 2}, {"Pik", 3}, {"Kier", 4}};
+    map<string, int> valuesDict = {
+        {"2", 2}, {"3", 3}, {"4", 4}, {"5", 5}, {"6", 6}, {"7", 7}, {"8", 8},
+        {"9", 9}, {"10", 10}, {"Walet", 11}, {"Dama", 12}, {"Król", 13}, {"As", 14}
+    };
 
-string Bot::strategy(const vector<Card>& table, int actual_bet) {
-    map<string, int> colorsDict;
-    colorsDict["Karo"] = 1;
-    colorsDict["Trefl"] = 2;
-    colorsDict["Pik"] = 3;
-    colorsDict["Kier"] = 4;
+    vector<int> values, colors;
 
-    vector<int> colors;
-
-    for (const auto & i : deck) colors.push_back(colorsDict[i.color]);
-
-    if (!table.empty()) for (const auto & i : table) colors.push_back(colorsDict[i.color]);
-
-    sort(colors.begin(), colors.end());
-
-    map<string, int> valuesDict;
-    valuesDict["2"] = 2;
-    valuesDict["3"] = 3;
-    valuesDict["4"] = 4;
-    valuesDict["5"] = 5;
-    valuesDict["6"] = 6;
-    valuesDict["7"] = 7;
-    valuesDict["8"] = 8;
-    valuesDict["9"] = 9;
-    valuesDict["10"] = 10;
-    valuesDict["Walet"] = 11;
-    valuesDict["Dama"] = 12;
-    valuesDict["Król"] = 13;
-    valuesDict["As"] = 14;
-
-    vector<int> values;
-
-    for (const auto & i : deck) values.push_back(valuesDict[i.value]);
-
-    if (!table.empty()) for (const auto & i : table) values.push_back(valuesDict[i.value]);
+    for (const auto& card : deck) {
+        values.push_back(valuesDict[card.value]);
+        colors.push_back(colorsDict[card.color]);
+    }
+    for (const auto& card : table) {
+        values.push_back(valuesDict[card.value]);
+        colors.push_back(colorsDict[card.color]);
+    }
 
     sort(values.begin(), values.end());
 
-    int bet = actual_bet;
+    enum HandStrength {
+        HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_OF_A_KIND,
+        STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND,
+        STRAIGHT_FLUSH, ROYAL_FLUSH
+    };
 
-    if (isWorth(values, colors)) {
-        for (int i = 0; i < 100; i++) {
-            int number = randomize(1, 10000);
-            if (isRoyalFlush(values, colors)) {
-                if (number % 2 == 0 && static_cast<int>(number * 5 * allInChance) % 5 == 0) {
-                    bet = cash;
-                    break;
-                }
-            } else if (isStraightFlush(values, colors)) {
-                if (number % 2 == 0 && static_cast<int>(number * 4 * allInChance) % 5 == 0) {
-                    if (2.0 * allInChance > 1) bet = cash;
-                    else bet = actual_bet * 2;
-                    break;
-                }
-            } else if (repeated(values, 4)) {
-                if (number % 2 == 0 && static_cast<int>(number * 3 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 3;
-                    break;
-                }
-            } else if (isFull(values)) {
-                if (number % 2 == 0 && static_cast<int>(number * 2.5 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 2.5;
-                    break;
-                }
-            } else if (repeated(colors, 5)) {
-                if (number % 2 == 0 && static_cast<int>(number * 2 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 2;
-                    break;
-                }
-            } else if (isStraight(values)) {
-                if (number % 2 == 0 && static_cast<int>(number * 1.5 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 1.5;
-                    break;
-                }
-            } else if (repeated(values, 3)) {
-                if (number % 2 == 0 && static_cast<int>(number * 1.25 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 1.25;
-                    break;
-                }
-            } else if (repeatedPairs(values, 2)) {
-                if (number % 2 == 0 && static_cast<int>(number * 1.1 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 1.1;
-                    break;
-                }
-            } else if (repeated(values, 2)) {
-                if (number % 2 == 0 && static_cast<int>(number * 1.05 * allInChance) % 5 == 0) {
-                    if (number >= 9000) bet = cash;
-                    else bet = actual_bet * 1.05;
-                    break;
-                }
-            }
-        }
-    } else {
-        // Increases a chance for a "Call" while having a high card
-        for (int i = 0; i < 10; i++) {
-            int number = randomize(1, 10000);
-            if (actual_bet > 0 && number % 2 == 0 && static_cast<int>(number * 0.05 * allInChance) % 5 == 0) return "Call";
-        }
+    HandStrength strength;
+    if (isRoyalFlush(values, colors)) strength = ROYAL_FLUSH;
+    else if (isStraightFlush(values, colors)) strength = STRAIGHT_FLUSH;
+    else if (repeated(values, 4)) strength = FOUR_OF_A_KIND;
+    else if (isFull(values)) strength = FULL_HOUSE;
+    else if (repeated(colors, 5)) strength = FLUSH;
+    else if (isStraight(values)) strength = STRAIGHT;
+    else if (repeated(values, 3)) strength = THREE_OF_A_KIND;
+    else if (repeatedPairs(values, 2)) strength = TWO_PAIR;
+    else if (repeated(values, 2)) strength = ONE_PAIR;
+    else strength = HIGH_CARD;
+
+    float decisionRoll = static_cast<float>(randomize(1, 1000)) / 1000.0f;
+
+    float strengthFactor = 0.0f;
+    switch (strength) {
+        case ROYAL_FLUSH: strengthFactor = 1.0f; break;
+        case STRAIGHT_FLUSH: strengthFactor = 0.95f; break;
+        case FOUR_OF_A_KIND: strengthFactor = 0.9f; break;
+        case FULL_HOUSE: strengthFactor = 0.85f; break;
+        case FLUSH: strengthFactor = 0.75f; break;
+        case STRAIGHT: strengthFactor = 0.65f; break;
+        case THREE_OF_A_KIND: strengthFactor = 0.55f; break;
+        case TWO_PAIR: strengthFactor = 0.45f; break;
+        case ONE_PAIR: strengthFactor = 0.3f; break;
+        case HIGH_CARD: strengthFactor = 0.1f; break;
     }
 
-    if (bet > cash) bet = cash;
+    // bluff logic
+    bool bluff = (decisionRoll < 0.1f * allInChance) && (strength <= ONE_PAIR) && (actualBet < cash * 0.2f);
 
-    if (actual_bet == 0) {
-        int min_bet = max(1, static_cast<int>(bet));
+    // consider raise or check
+    if (actualBet == 0) {
+        if (strength >= THREE_OF_A_KIND || bluff) return "Raise";
+        return "Check";
+    }
+
+    // handling all-ins or high bets
+    if (actualBet >= cash) {
+        if (strength >= FULL_HOUSE) return "Call";
+        if (strength >= THREE_OF_A_KIND && allInChance > 0.6f) return "Call";
+        return "Fold";
+    }
+
+    //  consider all-in if hand is strong and pot is big
+    if ((strength >= FULL_HOUSE && pot > cash * 0.5f && decisionRoll < allInChance) ||
+        (strength == ROYAL_FLUSH && decisionRoll < allInChance)) {
+        return "AllIn";
+    }
+
+    // consider raise
+    if ((strengthFactor * allInChance) > decisionRoll || bluff) {
         return "Raise";
-    } else if (bet > actual_bet) return "Raise";
-    else if (bet == actual_bet) return "Call";
-    else return "Fold";
+    }
+
+    // consider call
+    if (strength >= ONE_PAIR || actualBet < pot * 0.25f) {
+        return "Call";
+    }
+
+    return "Fold";
 }
+
+

@@ -20,6 +20,7 @@ void Poker::play() {
     double money = 0;
     int index = 0;
     vector<Card> table;
+    double actual_bet = 0, pot = 0;
     double bet;
 
     vector<Players*> line = {&player, &bob, &john, &tim};
@@ -177,7 +178,7 @@ void Poker::play() {
 
                 // Bot logic
                 Bot* bot = static_cast<Bot*>(i);
-                option = bot->strategy(table, current_round_bet - i->getBet());
+                option = bot->strategy(table, current_round_bet - i->getBet(), pot);
                 cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
                 wait();
 
