@@ -36,9 +36,6 @@ void Poker::play() {
 
     croupier.giveCard(table);
     croupier.giveCard(table);
-    croupier.giveCard(table);
-    croupier.giveCard(table);
-    croupier.giveCard(table);
     cout << "Karty na stole: " << endl;
     displayDeck(table);
     cout << endl;
