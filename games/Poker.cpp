@@ -49,6 +49,8 @@ void Poker::play() {
         if (line.size() == 1) break;
 
         actual_bet = 0;
+        double current_round_bet = 0;  // To track the highest bet in current betting round
+        bool bet_raised = false;       // Flag to indicate if bet was raised
 
         for (auto * i : line) i->setCheck(false);
         check_line.clear();
@@ -66,120 +68,16 @@ void Poker::play() {
         for (auto * i : line) cout << i->name << " ";
         cout << endl;
 
-        for (auto * i : line) {
-            if (i->getAllIn()) continue;
-            clear();
-            if (i->name != player.name) cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << actual_bet << ", Pieniądze na stole: " << pot << ")" << endl;
-            if (i->name != player.name) {
-                cout << "Karty na stole: " << endl;
-                displayDeck(table);
-                cout << endl;
-                cout << "Karty gracza: " << endl;
-                displayDeck(player.deck);
-                wait();
-            }
-            if (i->name == player.name) {
-                while (true) {
-                    cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << actual_bet << ", Pieniądze na stole: " << pot << ")" << endl;
-                    cout << "Karty na stole: " << endl;
-                    displayDeck(table);
-                    cout << endl;
-                    cout << "Karty gracza: " << " (" << i->checkCards(table) << ")" << endl;
-                    displayDeck(player.deck);
-                    cout << "Podaj opcję [Fold/Check/Call/Bet/All-in]:" << endl << "> ";
-                    cin >> option;
-                    if (option == "Fold") {
-                        i->setFold(true);
-                        break;
-                    } if (option == "Check") {
-                        i->setCheck(true);
-                        check_line.push_back(i);
-                        break;
-                    } if (option == "Call" and actual_bet < player.getCash()) {
-                        if (actual_bet == 0) {
-                            cout << "Nie możesz wykonać Call – nikt jeszcze nie postawił." << endl;
-                            wait();
-                            clear();
-                            continue;
-                        }
-                        bet = actual_bet;
-                        player.setBet(bet);
-                        player.setCash(player.getCash() - bet);
-                        money += bet;
-                        pot += bet;
-                        break;
-                    } if (option == "Bet" and actual_bet < player.getCash()) {
-                        while (true) {
-                            cout << "Podaj kwotę:" << endl << "> ";
-                            cin >> bet;
+        // First betting round
+        int players_to_act = line.size();
+        while (players_to_act > 0) {
+            for (auto * i : line) {
+                if (i->getAllIn() || i->getFold()) continue;
 
-                            if (bet >= actual_bet) {
-                                actual_bet = bet;
-                                pot += bet;
-                                money += bet;
-                                player.setBet(bet);
-                                player.setCash(player.getCash() - bet);
-                                break;
-                            } else {
-                                cout << "Niepoprawna kwota zakładu. Musi być większa niż aktualny zakład (" << actual_bet << ")" << endl;
-                            }
-                        }
-                        break;
-                    } if (option == "All-in") {
-                        i->setAllIn(true);
-                        actual_bet = player.getCash();
-                        money += player.getCash();
-                        break;
-                    }
-                    clear();
-                }
-                if (i->getFold() && i->name == player.name) break;
-                continue;
-            }
-
-            Bot* bot = static_cast<Bot*>(i);
-            option = bot->strategy(table, actual_bet, pot);
-            cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
-            wait();
-            if (option == "Fold") {
-                i->setFold(true);
-                cout << "Gracz " << i->name << " spasował" << endl;
-                wait();
-            } else if (option == "Check") {
-                i->setCheck(true);
-                check_line.push_back(i);
-            } else if (option == "Call") {
-                if (actual_bet == 0) {
-                    cout << "Bot nie może wykonać Call, bo nie ma zakładu do wyrównania" << endl;
-                    wait();
-                    continue;
-                }
-                bet = actual_bet;
-                i->setBet(bet);
-                pot += bet;
-                cout << "Gracz " << i->name << " wyrównuje zakład: " << bet << endl;
-                wait();
-            } else if (option == "Bet" || option == "Raise") {
-                double bot_bet = i->decideBetAmount(actual_bet);  // zakładamy, że masz taką metodę
-                if (bot_bet > actual_bet) {
-                    actual_bet = bot_bet;
-                    pot += bot_bet;
-                    money += bot_bet;
-                    i->setBet(bot_bet);
-                    cout << "Gracz " << i->name << " stawia " << bot_bet << endl;
-                }
-                wait();
-            } else if (option == "All-in") {
-                i->setAllIn(true);
-                cout << "Gracz " << i->name << " gra va banque" << endl;
-            }
-        }
-
-        if (!check_line.empty()) {
-            for (auto * i : check_line) {
-                if (i->getAllIn()) continue;
                 clear();
-                if (i->name != player.name) cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << actual_bet << ", Pieniądze na stole: " << pot << ")" << endl;;
+                if (i->name != player.name)
+                    cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << current_round_bet << ", Pieniądze na stole: " << pot << ")" << endl;
+
                 if (i->name != player.name) {
                     cout << "Karty na stole: " << endl;
                     displayDeck(table);
@@ -188,94 +86,152 @@ void Poker::play() {
                     displayDeck(player.deck);
                     wait();
                 }
+
                 if (i->name == player.name) {
                     while (true) {
-                        cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << actual_bet << ", Pieniądze na stole: " << pot << ")" << endl;
+                        cout << "Teraz gra gracz " << i->name << " (Aktualny zakład: " << current_round_bet << ", Pieniądze na stole: " << pot << ")" << endl;
                         cout << "Karty na stole: " << endl;
                         displayDeck(table);
                         cout << endl;
-                        cout << "Karty gracza: " << endl;
+                        cout << "Karty gracza: " << " (" << i->checkCards(table) << ")" << endl;
                         displayDeck(player.deck);
-                        cout << "Podaj opcję [Fold/Call/Bet/All-in]:" << endl << "> ";
+
+                        // Available options
+                        if (current_round_bet == 0) {
+                            cout << "Podaj opcję [Fold/Check/Bet/All-in]:" << endl << "> ";
+                        } else {
+                            cout << "Podaj opcję [Fold/Call/Raise/All-in]:" << endl << "> ";
+                        }
+
                         cin >> option;
+
                         if (option == "Fold") {
                             i->setFold(true);
+                            players_to_act--;
                             break;
-                        } if (option == "Call") {
-                            if (actual_bet == 0) {
-                                cout << "Nie możesz wykonać Call – nikt jeszcze nie postawił." << endl;
+                        }
+                        else if (option == "Check" && current_round_bet == 0) {
+                            i->setCheck(true);
+                            check_line.push_back(i);
+                            players_to_act--;
+                            break;
+                        }
+                        else if (option == "Call" && current_round_bet > 0) {
+                            if (current_round_bet > i->getCash()) {
+                                cout << "Nie masz wystarczająco pieniędzy, aby wyrównać!" << endl;
                                 wait();
-                                clear();
                                 continue;
                             }
-                            bet = actual_bet;
-                            i->setBet(bet);
+                            bet = current_round_bet - i->getBet();
+                            i->setBet(current_round_bet);
+                            i->setCash(i->getCash() - bet);
                             pot += bet;
+                            players_to_act--;
                             break;
-                        } if (option == "Bet") {
+                        }
+                        else if ((option == "Bet" && current_round_bet == 0) || (option == "Raise" && current_round_bet > 0)) {
                             while (true) {
                                 cout << "Podaj kwotę:" << endl << "> ";
                                 cin >> bet;
 
-                                if (bet > actual_bet) {
-                                    if (actual_bet == 0) {
-                                        actual_bet = bet;
+                                if (bet > current_round_bet && bet <= i->getCash()) {
+                                    double total_bet = i->getBet() + bet;
+                                    if (total_bet > current_round_bet) {
+                                        current_round_bet = total_bet;
+                                        actual_bet = current_round_bet;
                                         pot += bet;
+                                        i->setBet(total_bet);
+                                        i->setCash(i->getCash() - bet);
+                                        players_to_act = line.size() - 1;  // Reset counter for other players
+                                        bet_raised = true;
+                                        break;
+                                    } else {
+                                        cout << "Nowy zakład musi być większy niż aktualny (" << current_round_bet << ")" << endl;
                                     }
-                                    money += bet;
-                                    i->setBet(bet);
-                                    break;
                                 } else {
-                                    cout << "Niepoprawna kwota zakładu. Musi być większa niż aktualny zakład (" << actual_bet << ")" << endl;
+                                    cout << "Niepoprawna kwota zakładu!" << endl;
                                 }
                             }
                             break;
-                        } if (option == "All-in") {
+                        }
+                        else if (option == "All-in") {
+                            bet = i->getCash();
+                            if (bet > current_round_bet) {
+                                current_round_bet = bet;
+                                actual_bet = current_round_bet;
+                                players_to_act = line.size() - 1;
+                            }
                             i->setAllIn(true);
-                            actual_bet = player.getCash();
-                            money += player.getCash();
+                            i->setBet(i->getBet() + bet);
+                            pot += bet;
+                            players_to_act--;
                             break;
                         }
-                        clear();
+                        else {
+                            cout << "Niepoprawna opcja!" << endl;
+                            wait();
+                        }
                     }
                     if (i->getFold() && i->name == player.name) break;
                     continue;
                 }
 
+                // Bot logic
                 Bot* bot = static_cast<Bot*>(i);
-                option = bot->strategy(table, actual_bet, pot);
+                option = bot->strategy(table, current_round_bet - i->getBet(), pot);
                 cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
                 wait();
+
                 if (option == "Fold") {
                     i->setFold(true);
+                    players_to_act--;
                     cout << "Gracz " << i->name << " spasował" << endl;
-                    wait();
-                } else if (option == "Call") {
-                    if (actual_bet == 0) {
-                        cout << "Bot nie może wykonać Call, bo nie ma zakładu do wyrównania" << endl;
-                        wait();
-                        continue;
+                }
+                else if (option == "Check" && current_round_bet == 0) {
+                    i->setCheck(true);
+                    check_line.push_back(i);
+                    players_to_act--;
+                }
+                else if (option == "Call" && current_round_bet > 0) {
+                    bet = current_round_bet - i->getBet();
+                    if (bet > i->getCash()) {
+                        cout << "Gracz " << i->name << " nie ma wystarczająco pieniędzy!" << endl;
+                        i->setAllIn(true);
+                        bet = i->getCash();
                     }
-                    bet = actual_bet;
-                    i->setBet(bet);
+                    i->setBet(current_round_bet);
+                    i->setCash(i->getCash() - bet);
                     pot += bet;
-                    cout << "Gracz " << i->name << " wyrównuje zakład: " << bet << endl;
-                    wait();
-                } else if (option == "Bet" || option == "Raise") {
-                    double bot_bet = i->decideBetAmount(actual_bet);  // zakładamy, że masz taką metodę
-                    if (bot_bet > actual_bet) {
-                        actual_bet = bot_bet;
+                    players_to_act--;
+                    cout << "Gracz " << i->name << " wyrównuje do " << current_round_bet << endl;
+                }
+                else if (option == "Bet" || option == "Raise") {
+                    double bot_bet = bot->decideBetAmount(current_round_bet);
+                    if (bot_bet > current_round_bet && bot_bet <= i->getCash()) {
+                        current_round_bet = i->getBet() + bot_bet;
+                        actual_bet = current_round_bet;
                         pot += bot_bet;
-                        money += bot_bet;
-                        i->setBet(bot_bet);
-                        cout << "Gracz " << i->name << " stawia " << bot_bet << endl;
+                        i->setBet(current_round_bet);
+                        i->setCash(i->getCash() - bot_bet);
+                        players_to_act = line.size() - 1;
+                        bet_raised = true;
+                        cout << "Gracz " << i->name << " podbija do " << current_round_bet << endl;
                     }
-                    wait();
-                } else if (option == "All-in") {
+                }
+                else if (option == "All-in") {
+                    bet = i->getCash();
+                    if (bet > current_round_bet) {
+                        current_round_bet = bet;
+                        actual_bet = current_round_bet;
+                        players_to_act = line.size() - 1;
+                    }
                     i->setAllIn(true);
-                    cout << "Gracz " << i->name << " gra va banque" << endl;
-                    wait();
-                    }
+                    i->setBet(i->getBet() + bet);
+                    pot += bet;
+                    players_to_act--;
+                    cout << "Gracz " << i->name << " idzie all-in z " << bet << endl;
+                }
+                wait();
             }
         }
 
@@ -291,10 +247,11 @@ void Poker::play() {
         pot += actual_bet;
     }
 
+    // Showdown
     cout << "Karty na stole: " << endl;
     displayDeck(table);
     cout << endl;
-    cout << "Karty gracza: " << endl;
+    cout << "Karty gracza: " << " (" << player.checkCards(table) << ")" << endl;
     displayDeck(player.deck);
 
     if (player.getFold()) {
@@ -302,11 +259,14 @@ void Poker::play() {
         player.setCash(player.getCash() + pot);
     } else {
         if (line.size() == 1) {
-            cout << "Wygrał gracz " << player.name << endl;
-            player.setCash(player.getCash() + pot);
-        } else whoWinsPoker(line, table);
+            cout << "Wygrał gracz " << line[0]->name << endl;
+            line[0]->setCash(line[0]->getCash() + pot);
+        } else {
+            whoWinsPoker(line, table);
+        }
     }
 }
+
 
 void Poker::reset() const {
     player.deck.clear();
@@ -328,93 +288,88 @@ void Poker::reset() const {
 }
 
 void Poker::whoWinsPoker(vector<Players*> line, vector<Card>& table) const {
+    vector<pair<Players*, pair<int, vector<Card>>>> playersScore;
     vector<Players*> winners;
     int bestHandValue = 0;
+    vector<Card> bestHand;
 
+    cout << "Karty na stole: " << endl;
+    displayDeck(table);
+    cout << endl << "Karty graczy: " << endl;
+
+    //checking every player's highest combination, saving it to vector
     for (auto player : line) {
-        if (player->getFold()) continue; // Skip folded players
-
-        vector<Card> combinedCards = player->deck;
-        combinedCards.insert(combinedCards.end(), table.begin(), table.end());
-
-        string hand = player->checkCards(table);
-        int handValue = getHandValue(hand, combinedCards);
-
-        if (handValue > bestHandValue) {
-            bestHandValue = handValue;
-            winners = {player};
-        }
-        else if (handValue == bestHandValue) {
-            // If same hand value, we need to compare the actual cards
-            bool isBetter = false;
-            if (!winners.empty()) {
-                // Compare the best cards in both hands
-                vector<Card> currentBestCards = winners[0]->deck;
-                currentBestCards.insert(currentBestCards.end(), table.begin(), table.end());
-
-                // Sort both hands in descending order
-                sort(combinedCards.begin(), combinedCards.end(),
-                    [](const Card& a, const Card& b) {
-                        map<string, int> values = {
-                            {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                            {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                        };
-                        return values[a.value] > values[b.value];
-                    });
-
-                sort(currentBestCards.begin(), currentBestCards.end(),
-                    [](const Card& a, const Card& b) {
-                        map<string, int> values = {
-                            {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                            {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                        };
-                        return values[a.value] > values[b.value];
-                    });
-
-                // Compare card by card
-                for (size_t i = 0; i < min(combinedCards.size(), currentBestCards.size()); i++) {
-                    map<string, int> values = {
-                        {"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},{"8",8},
-                        {"9",9},{"10",10},{"Walet",11},{"Dama",12},{"Król",13},{"As",14}
-                    };
-
-                    int currentCard = values[combinedCards[i].value];
-                    int bestCard = values[currentBestCards[i].value];
-
-                    if (currentCard > bestCard) {
-                        isBetter = true;
-                        break;
-                    } else if (currentCard < bestCard) {
-                        break;
+        cout << player->name << ": " << endl;
+        displayDeck(player->deck);
+        cout << endl;
+        if (player->getFold()) continue;
+        int playerHighestCombinationValue = 0;
+        vector<Card> playerHighestCombination;
+        vector<Card> combinedCards = table;
+        combinedCards.push_back(player->deck[0]);
+        combinedCards.push_back(player->deck[1]);
+        for (int i = 0; i < combinedCards.size(); i++) {
+            for (int j = 0; j < combinedCards.size(); j++) {
+                if (i != j) {
+                    vector<Card> currentlyConsidered;
+                    for (int k = 0; k < combinedCards.size(); k++) {
+                        if (k != i && k != j) {
+                            currentlyConsidered.push_back(combinedCards[k]);
+                        }
+                    }
+                    string res = checkCards(currentlyConsidered);
+                    int handValue = getHandValue(res, currentlyConsidered);
+                    if (handValue > playerHighestCombinationValue) {
+                        playerHighestCombinationValue = handValue;
+                        playerHighestCombination = currentlyConsidered;
                     }
                 }
             }
+        }
+        playersScore.push_back(make_pair(player, make_pair(playerHighestCombinationValue, playerHighestCombination)));
+    }
 
-            if (isBetter) {
-                bestHandValue = handValue;
-                winners = {player};
-            } else if (handValue == bestHandValue) {
-                winners.push_back(player);
-            }
+    for (auto score : playersScore) {
+        if (score.second.first > bestHandValue) {
+            bestHandValue = score.second.first;
         }
     }
 
-    if (winners.empty()) {
-        cout << "Wszyscy gracze spasowali!" << endl;
-    } else if (winners.size() == 1) {
-        cout << "Wygrał gracz: " << winners[0]->name << " z układem: " << winners[0]->checkCards(table) << endl;
-        winners[0]->displayHand(table);
-    } else {
-        cout << "Remis między graczami: ";
-        for (size_t i = 0; i < winners.size(); i++) {
-            cout << winners[i]->name;
-            if (i < winners.size() - 1) cout << ", ";
+    for (auto score : playersScore) {
+        if (score.second.first == bestHandValue) {
+            winners.push_back(score.first);
         }
-        cout << " z układem: " << winners[0]->checkCards(table) << endl;
+    }
+
+    map<int, std::string> handValues;
+    handValues[1] = "Wysoka karta";
+    handValues[2] = "Para";
+    handValues[3] = "Dwie pary";
+    handValues[4] = "Trójka";
+    handValues[5] = "Strit";
+    handValues[6] = "Kolor";
+    handValues[7] = "Ful";
+    handValues[8] = "Kareta";
+    handValues[9] = "Poker";
+    handValues[10] = "Poker królewski";
+
+    if (winners.size() == 1) {
+        cout << "Wygrał " << winners[0]->name << endl;
+        cout << "Kombinacja " << handValues[bestHandValue];
+        winners[0]->setCash(winners[0]->getCash() + pot);
+    }
+
+    //if more than one player has the winning combination the win is splitted
+    else {
+        int win = pot / winners.size();
+        cout << "Remis, stawkę dzieli się na " << win << " ,zwycięzcy:" << endl;
         for (auto winner : winners) {
-            winner->displayHand(table);
+            cout << winner->name << " " << handValues[bestHandValue] << endl;
+            winner->setCash(winner->getCash() + win);
         }
     }
-    wait();
-    clear();
+
+    string temporary;
+    cout << endl << "Wciśnij Enter, żeby kontynuować...";
+    getline(cin, temporary);
 }
