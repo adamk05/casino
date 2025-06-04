@@ -46,7 +46,7 @@ void Baccarat::play() {
         cout << "Krupier ma " << croupierPoints << " punktów" << endl;
         wait();
         if (playerPoints < croupierPoints) {
-            cout << "Przegrywasz zakład";
+            cout << "Przegrywasz zakład" << endl;
         } else if (playerPoints == croupierPoints) {
             cout << "Remis, zwrot zakładu" << endl;
             player.winBet(1);

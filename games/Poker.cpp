@@ -175,12 +175,12 @@ void Poker::play() {
                 }
 
                 // Bot logic
-                Bot *bot = static_cast<Bot *>(i);
-                option = bot->strategy(table, current_round_bet - i->getBet(), pot);
-                cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
-                wait();
-
-                if (option == "Fold") {
+                if (i->name != player.name) {
+                    Bot *bot = static_cast<Bot *>(i);
+                    option = bot->strategy(table, current_round_bet - i->getBet(), pot);
+                    cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
+                    wait();
+                    if (option == "Fold") {
                     i->setFold(true);
                     players_to_act--;
                     cout << "Gracz " << i->name << " spasował" << endl;
@@ -189,7 +189,7 @@ void Poker::play() {
                     check_line.push_back(i);
                     players_to_act--;
                 } else if (option == "Call") {
-                    if (current_round_bet == 0) {
+                    if (current_round_bet <= 0) {
                         players_to_act--;
                     } else {
                         bet = current_round_bet - i->getBet();
@@ -229,6 +229,9 @@ void Poker::play() {
                     players_to_act--;
                     cout << "Gracz " << i->name << " idzie all-in z " << bet << endl;
                 }
+                }
+
+
                 line.erase(remove_if(line.begin(), line.end(), [](Players *player) {
                     return player->getFold();
                 }), line.end());
@@ -243,7 +246,10 @@ void Poker::play() {
         if (table.size() > 2) rotate(line.rbegin(), line.rbegin() + 1, line.rend());
 
         clear();
-        pot += actual_bet;
+
+        for (auto i : line) {
+            i->setBet(0);
+        }
     }
 
     // Showdown
@@ -253,12 +259,7 @@ void Poker::play() {
     cout << "Karty gracza: " << endl;
     displayDeck(player.deck);
 
-    if (line.size() == 1) {
-        cout << "Wygrał gracz " << line[0]->name << endl;
-        line[0]->setCash(line[0]->getCash() + pot);
-    } else {
-        whoWinsPoker(line, table, pot);
-    }
+    whoWinsPoker(line, table, pot);
 
     wait(15);
     
