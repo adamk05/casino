@@ -10,7 +10,9 @@
 #include "games/roulette/Roulette.h"
 #include "games/Poker.h"
 
+
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
     Player player;
     Croupier croupier;
     Blackjack blackjack(player, croupier);
@@ -23,7 +25,6 @@ int main() {
     Poker poker(player, croupier, bob, john, tim);
     Roulette roulette(player);
     while (true) {
-        // system("cls");
         clear();
         player = initFromFile();
         string question = "W co chcesz zagrać? (blackjack / bakarat / craps / bandyta / ruletka / poker)";

@@ -38,6 +38,24 @@ void Craps::play() {
                 cout << "Nie masz punktów, nie możesz obstawić nowego zakładu" << endl;
                 break;
             }
+            if (any7Bet > 0 || yoBet > 0 || hiLoBet > 0 || fieldBet > 0 || crapsBet > 0) {
+                cout << "Obstawione zakłady poboczne: " << endl;
+            }
+            if (any7Bet > 0) {
+                cout << " any 7: " << any7Bet << endl;
+            }
+            if (yoBet > 0) {
+                cout << " yo: " << yoBet << endl;
+            }
+            if (hiLoBet > 0) {
+                cout << " hi-lo: " << hiLoBet << endl;
+            }
+            if (crapsBet > 0) {
+                cout << " craps: " << crapsBet << endl;
+            }
+            if (fieldBet > 0) {
+                cout << " field: " << fieldBet << endl;
+            }
             question = "Dostępne zakłady poboczne:\n any 7 (7)\n Yo (11)\n Hi-Lo (2 lub 12)\n Craps (2, 3, lub 12)\n Field (2, 3, 4, 9, 10, 11, 12)\nCzy chcesz obstawić jakiś zakład poboczny? (a - any 7 / y - yo / h - hi-lo / c - craps / f -field / n - nie chcę stawiać pobocznego zakładu)";
             vector <string> propBetOptions;
             propBetOptions.push_back("a");
@@ -222,7 +240,9 @@ void Craps::reset() {
 }
 
 void Craps::settlePropBets(int result) {
-    cout << "Rozliczenie zakładów pobocznych: " << endl;
+    if (any7Bet > 0 || yoBet > 0 || hiLoBet > 0 || fieldBet > 0 || crapsBet > 0) {
+        cout << "Rozliczenie zakładów pobocznych: " << endl;
+    }
     if (any7Bet > 0) {
         wait();
         if (result == 7) {
