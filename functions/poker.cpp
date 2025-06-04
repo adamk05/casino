@@ -56,16 +56,8 @@ bool isRoyalFlush(const vector<int>& values, vector<int>& colors) {
 }
 
 bool isStraight(const vector<int>& values) {
-    for (int i = 0; i < values.size(); i++)
-        if ((values[i] + 1 == values[i + 1] &&
-            values[i + 1] + 1 == values[i + 2] &&
-            values[i + 2] + 1 == values[i + 3] &&
-            values[i + 3] + 1 == values[i + 4]) ||
-            (values[values.size() - 1] == 14 &&
-            values[i] + 1 == values[i + 1] &&
-            values[i + 1] + 1 == values[i + 2] &&
-            values[i + 2] + 1 == values[i + 3])) return true;
-
+    vector<int> newValues = values;
+    if (values[4] - values[0] == 4 && !repeated(newValues, 2)) return true;
     return false;
 }
 
@@ -73,22 +65,7 @@ bool isStraightFlush(const vector<int>& values, vector<int> &colors) {
     return repeated(colors, 5) && isStraight(values);
 }
 
-int getHandValue(string hand, vector<Card> cards) {
-    map<string, int> valuesDict;
-    valuesDict["2"] = 2;
-    valuesDict["3"] = 3;
-    valuesDict["4"] = 4;
-    valuesDict["5"] = 5;
-    valuesDict["6"] = 6;
-    valuesDict["7"] = 7;
-    valuesDict["8"] = 8;
-    valuesDict["9"] = 9;
-    valuesDict["10"] = 10;
-    valuesDict["Walet"] = 11;
-    valuesDict["Dama"] = 12;
-    valuesDict["Król"] = 13;
-    valuesDict["As"] = 14;
-
+int getHandValue(string hand, vector<Card>& cards) {
     map<string, int> handValues;
     handValues["Wysoka karta"] = 1;
     handValues["Para"] = 2;
@@ -101,106 +78,39 @@ int getHandValue(string hand, vector<Card> cards) {
     handValues["Poker"] = 9;
     handValues["Poker królewski"] = 10;
 
-    int handRank = handValues[hand];
+    return handValues[hand];
+}
 
-    if (hand == "Para") {
-        int pairRank = 0;
-        for (const auto& card : cards) {
-            pairRank = max(pairRank, valuesDict[card.value]);
-        }
-        handRank = handRank * 100 + pairRank;
+string checkCards(vector<Card> &cards) {
+    map<string, int> colorsDict = {
+        {"Karo", 1}, {"Trefl", 2}, {"Pik", 3}, {"Kier", 4}
+    };
+
+    map<string, int> valuesDict = {
+        {"2", 2}, {"3", 3}, {"4", 4}, {"5", 5}, {"6", 6}, {"7", 7},
+        {"8", 8}, {"9", 9}, {"10", 10}, {"Walet", 11}, {"Dama", 12},
+        {"Król", 13}, {"As", 14}
+    };
+
+    vector<int> colors;
+    vector<int> values;
+
+    for (const auto& card : cards) {
+        values.push_back(valuesDict[card.value]);
+        colors.push_back(colorsDict[card.color]);
     }
 
-    if (hand == "Dwie pary") {
-        map<int, int> valueCounts;
-        for (const auto& card : cards) {
-            valueCounts[valuesDict[card.value]]++;
-        }
+    sort(values.begin(), values.end());
 
-        vector<int> pairs;
-        int kicker = 0;
-        for (const auto& [value, count] : valueCounts) {
-            if (count == 2) pairs.push_back(value);
-            if (count == 1) kicker = max(kicker, value);
-        }
+    if (isRoyalFlush(values, colors)) return "Poker królewski";
+    if (isStraightFlush(values, colors)) return "Poker";
+    if (repeated(values, 4)) return "Kareta";
+    if (isFull(values)) return "Ful";
+    if (repeated(colors, 5)) return "Kolor";
+    if (isStraight(values)) return "Strit";
+    if (repeated(values, 3)) return "Trójka";
+    if (repeatedPairs(values, 2)) return "Dwie pary";
+    if (repeated(values, 2)) return "Para";
 
-        if (pairs.size() >= 2) {
-            sort(pairs.begin(), pairs.end(), greater<int>());
-            handRank = handRank * 1000 + pairs[0] * 100 + pairs[1] * 10 + kicker;
-        }
-    }
-
-    if (hand == "Trójka") {
-        int tripletValue = 0;
-        for (const auto& card : cards) {
-            tripletValue += valuesDict[card.value];
-        }
-        handRank = handRank * 10000 + tripletValue;
-    }
-
-    if (hand == "Strit") {
-        int straightRank = 0;
-        for (const auto& card : cards) {
-            straightRank = max(straightRank, valuesDict[card.value]);
-        }
-        handRank = handRank * 100000 + straightRank;
-    }
-
-    if (hand == "Kolor") {
-        Card highestCard = cards.back();
-        int highestValue = valuesDict[highestCard.value];
-        handRank = handRank * 1000000 + highestValue;
-    }
-
-    if (hand == "Ful") {
-        map<int, int> valueCounts;
-        for (const auto& card : cards) {
-            valueCounts[valuesDict[card.value]]++;
-        }
-
-        int threeOfAKindValue = 0, pairValue = 0;
-        for (const auto& [value, count] : valueCounts) {
-            if (count == 3) threeOfAKindValue = value;
-            if (count == 2) pairValue = value;
-        }
-
-        if (threeOfAKindValue && pairValue) {
-            handRank = handRank * 10000000 + threeOfAKindValue * 10 + pairValue;
-        }
-    }
-
-    if (hand == "Kareta") {
-        int karetaValue = 0;
-        for (const auto& card : cards) {
-            karetaValue += valuesDict[card.value];
-        }
-        handRank = handRank * 100000000 + karetaValue;
-    }
-
-    if (hand == "Poker") {
-        int pokerRank = 0;
-        for (const auto& card : cards) {
-            pokerRank = max(pokerRank, valuesDict[card.value]);
-        }
-        handRank = handRank * 1000000000 + pokerRank;
-    }
-
-    if (hand == "Poker królewski") {
-        handRank = handRank * 10000000000;
-    }
-
-    if (hand == "Wysoka karta") {
-        vector<int> cardValues;
-        for (const auto& card : cards) {
-            cardValues.push_back(valuesDict[card.value]);
-        }
-
-        sort(cardValues.rbegin(), cardValues.rend());
-        handRank = handRank * 10;
-        for (int i = 0; i < min(5, (int)cardValues.size()); ++i) {
-            handRank = handRank * 10 + cardValues[i];
-        }
-    }
-
-    return handRank;
+    return "Wysoka karta";
 }

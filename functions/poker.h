@@ -25,7 +25,9 @@ bool isStraight(const vector<int>& values);
 // Checks if there is a straight flush
 bool isStraightFlush(const vector<int>& values, vector<int>& colors);
 
+string checkCards(vector<Card>& cards);
+
 // Gets cards values
-int getHandValue(string hand, vector<Card> cards);
+int getHandValue(string hand, vector<Card>& cards);
 
 #endif //POKER_H

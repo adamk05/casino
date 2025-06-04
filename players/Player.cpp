@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player() : Players() { }
+Player::Player() : Players(), bet(0) { }
 
 Player::Player(string name) : Players(name), bet(0) {
     this->cash = 500;
