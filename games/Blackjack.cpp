@@ -133,7 +133,7 @@ void Blackjack::play() {
             //after split both hands are independent
             bool handOneFinish = false;
             bool handTwoFinish = false;
-            // clear();
+            clear();
             //game ends if both hands had ended
             while (!handOneFinish || !handTwoFinish) {
                 cout << "Karta krupiera: " << endl;
@@ -167,6 +167,12 @@ void Blackjack::play() {
                     }
                 }
                 if (!handTwoFinish) {
+                    clear();
+                    cout << "Karta krupiera: " << endl;
+                    displayCard(croupier.deck.at(0));
+                    cout << "Twoje karty: " << endl;
+                    printDecksAfterSplit();
+                    displayCard(splittedDeck.at(1));
                     string question = "Jaki ruch wybierasz dla ręki 2 (s - stand/h - hit)";;
                     vector<string> options;
                     options.push_back("s");
