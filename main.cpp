@@ -16,9 +16,9 @@ int main() {
     Baccarat baccarat(player, croupier);
     Craps craps(player);
     OneHandedBandit one_handed_bandit(player);
-    Bot tim("tim", 0.2);
-    Bot john("john", 0.5);
-    Bot bob("bob", 0.7);
+    Bot tim("tim", 0.3);
+    Bot john("john", 0.6);
+    Bot bob("bob", 0.75);
     Poker poker(player, croupier, bob, john, tim);
     while (true) {
         // system("cls");

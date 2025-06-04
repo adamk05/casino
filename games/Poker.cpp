@@ -138,7 +138,7 @@ void Poker::play() {
             }
 
             Bot* bot = static_cast<Bot*>(i);
-            option = bot->strategy(table, actual_bet);
+            option = bot->strategy(table, actual_bet, pot);
             cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
             wait();
             if (option == "Fold") {
@@ -243,7 +243,7 @@ void Poker::play() {
                 }
 
                 Bot* bot = static_cast<Bot*>(i);
-                option = bot->strategy(table, actual_bet);
+                option = bot->strategy(table, actual_bet, pot);
                 cout << "Gracz " << i->name << " wybrał opcję: " << option << endl;
                 wait();
                 if (option == "Fold") {
@@ -274,7 +274,8 @@ void Poker::play() {
                 } else if (option == "All-in") {
                     i->setAllIn(true);
                     cout << "Gracz " << i->name << " gra va banque" << endl;
-                    wait();               }
+                    wait();
+                    }
             }
         }
 
