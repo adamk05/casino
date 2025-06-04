@@ -8,6 +8,7 @@ void Blackjack::play() {
     reset();
 
     string question = "Ile stawiasz?";
+    string temporary;
 
     while (true) {
         float bet = getFloatInput(question);
@@ -95,6 +96,9 @@ void Blackjack::play() {
             } else {
                 cout << "Przegrywasz zakład";
             }
+
+            std::cout << "Wciśnij Enter, żeby kontynuować..." << flush;
+            getline(cin, temporary);
             return;
         }
         if (insurance) {
@@ -210,6 +214,9 @@ void Blackjack::play() {
                 string response = multiChoiceResponse(question, options);
                 if (response == "s") {
                     settleBet(false);
+                    string temporary;
+                    std::cout << "Wciśnij Enter, żeby kontynuować..." << flush;
+                    getline(cin, temporary);
                     return;
                 } else if (response == "h") {
                     cout << "Krupier daje ci karte" << endl;
@@ -224,6 +231,9 @@ void Blackjack::play() {
                     wait();
                     if (playerPoints > 21) {
                         cout << "Przekroczyłeś 21 punktów, przegrywasz zakład" << endl;
+
+                        std::cout << "Wciśnij Enter, żeby kontynuować..." << flush;
+                        getline(cin, temporary);
                         return;
                     }
                 } else if (response == "d") {
@@ -239,11 +249,16 @@ void Blackjack::play() {
                     displayCard(player.deck.at(player.deck.size() - 1));
                     wait();
                     settleBet(false);
+
+                    std::cout << "Wciśnij Enter, żeby kontynuować..." << flush;
+                    getline(cin, temporary);
                     return;
                 }
             }
         }
     }
+    std::cout << "Wciśnij Enter, żeby kontynuować..." << flush;
+    getline(cin, temporary);
 }
 
 void Blackjack::reset() {
