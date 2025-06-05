@@ -79,7 +79,7 @@ string Bot::strategy(const vector<Card>& table, int actualBet, int pot) {
     }
 
     // bluff logic
-    bool bluff = (decisionRoll < 0.1f * allInChance) && (strength <= ONE_PAIR) && (actualBet < cash * 0.2f);
+    bool bluff = (decisionRoll < 0.7f * allInChance) && (strength <= ONE_PAIR) && (actualBet < cash * 0.2f);
 
     // consider raise or check
     if (actualBet == 0) {
